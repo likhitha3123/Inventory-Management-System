@@ -14,11 +14,7 @@ async function loadDashboard(){
     document.getElementById('statSales').textContent     = fmt(s.sales);
     document.getElementById('statSites').textContent     = fmt(s.sites);
     document.getElementById('statPromos').textContent    = fmt(s.promos);
-
-    // =========================
-    // RESPONSIVE FIX ONLY
-    // =========================
-    // When screen width is small, stack first 2 charts vertically
+//=======================================================
     function makeChartsResponsive() {
       var revenueCard = document.getElementById('chartRevenue')?.closest('.col-md-6');
       var topCard     = document.getElementById('chartTopProducts')?.closest('.col-md-6');
