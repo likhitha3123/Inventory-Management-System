@@ -11,6 +11,17 @@
 .chart-wrap{position:relative;height:200px;}
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 .charts-grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.dashboard-top-charts{
+  display:grid;
+  grid-template-columns:3fr 2fr;
+  gap:24px;
+}
+
+@media (max-width: 768px){
+  .dashboard-top-charts{
+    grid-template-columns:1fr;
+  }
+}
 @media(max-width:900px){.charts-grid,.charts-grid-3{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -69,7 +80,7 @@
   </div>
 
   <!-- Charts Row 1: Revenue line (wide) + Top Products bar -->
-  <div class="charts-grid" style="grid-template-columns:3fr 2fr;">
+  <div class="charts-grid dashboard-top-charts">
     <div class="chart-card">
       <div class="chart-title">Revenue — Last 7 Days</div>
       <div class="chart-sub">Daily revenue trend</div>
