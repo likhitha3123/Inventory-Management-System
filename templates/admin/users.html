@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Users — INVENTORY</title>
+  <link rel="stylesheet" href="/static/css/theme.css" />
+  <style>
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .modal {
+      background: #fff;
+      padding: 28px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 500px
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- SIDEBAR (same as yours) -->
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="brand"><div class="logo-icon">📦</div>INVENTORY</div><div class="tagline">Management System</div></div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Overview</div><a href="/admin/dashboard" class="nav-link" data-page="dashboard"><span class="nav-icon">🏠</span> Dashboard</a>
+    <div class="nav-section">Inventory</div>
+    <a href="/admin/products"  class="nav-link" data-page="products"><span class="nav-icon">📦</span> Products</a>
+    <a href="/admin/inventory" class="nav-link" data-page="inventory"><span class="nav-icon">🗃️</span> Inventory</a>
+    <a href="/admin/sites"     class="nav-link" data-page="sites"><span class="nav-icon">🏪</span> Sites</a>
+    <a href="/admin/purchase-orders" class="nav-link" data-page="purchase-orders"><span class="nav-icon">🛒</span> Purchase Orders</a>
+    <a href="/admin/suppliers" class="nav-link" data-page="suppliers"><span class="nav-icon">🏭</span> Suppliers</a>
+    <div class="nav-section">Orders &amp; Logistics</div>
+    <a href="/admin/sales-orders" class="nav-link" data-page="sales-orders"><span class="nav-icon">🧾</span> Sales Orders</a>
+    <a href="/admin/sales"      class="nav-link" data-page="sales"><span class="nav-icon">📈</span> Sales</a>
+    <a href="/admin/logistics"  class="nav-link" data-page="logistics"><span class="nav-icon">🚚</span> Logistics</a>
+    <a href="/admin/promotions" class="nav-link" data-page="promotions"><span class="nav-icon">🎁</span> Promotions</a>
+    <a href="/admin/customers" class="nav-link" data-page="customers"><span class="nav-icon">👤</span> Customers</a>
+    <div class="nav-section">Administration</div>
+    <a href="/admin/users" class="nav-link   "><span class="nav-icon">👥</span> Users</a>  
+    <a href="/admin/audit-log" class="nav-link" data-page="audit-log"><span class="nav-icon">📋</span> Audit Log</a>
+    <a href="/admin/messages"  class="nav-link" data-page="messages"><span class="nav-icon">✉️</span> Messages <span class="nav-badge" id="msgBadge" style="display:none;background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:10px;"></span></a>
+  </nav>
+  <div class="sidebar-footer"><div class="user-row"><div class="user-avatar">A</div><div><div class="user-name">Admin</div><div class="user-role">Administrator</div></div></div></div>
+</aside>
+
+  <!-- TOP NAV (UNCHANGED) -->
+  <header class="topnav">
+    <div class="topnav-left">
+      <span class="topnav-heading">INVENTORY</span>
+      <span class="topnav-sep">/</span>
+      <span class="topnav-page">Users</span>
+    </div>
+    <div class="topnav-right">
+      <a href="/logout" class="btn-logout"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-2px;"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Users</h1>
+        <p class="page-subtitle">Manage analysts and managers.</p>
+      </div>
+
+      <div class="page-actions">
+        <button class="btn btn-outline" onclick="openModal('stateModal')">New State</button>
+        <button class="btn btn-primary" onclick="openCreate()">+ Add User</button>
+      </div>
+    </div>
+
+    <!-- CARDS (SAME UI) -->
+    <div class="grid g4 mb24">
+      <div class="stat-card">
+        <div class="stat-icon si-sky">📊</div>
+        <div>
+          <div class="stat-label">Total Analysts</div>
+          <div class="stat-value" id="statAnalysts">—</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon si-purple"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <div>
+          <div class="stat-label">Total Managers</div>
+          <div class="stat-value" id="statManagers">—</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon si-teal">🗺️</div>
+        <div>
+          <div class="stat-label">States Covered</div>
+          <div class="stat-value" id="statStates">—</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon si-purple"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div>
+        <div>
+          <div class="stat-label">Free States</div>
+          <div class="stat-value" id="statAvail">—</div>
+        </div>
+      </div>
+
+      <!-- <div class="stat-card">
+        <div class="stat-icon si-amber">🔑</div>
+        <div>
+          <div class="stat-label">First Login Pending</div>
+          <div class="stat-value" id="statPending">—</div>
+        </div>
+      </div> -->
+    </div>
+    <div id="globalMsg" style="display:none;margin-bottom:15px;"></div>
+    <!-- TABLE (UNCHANGED) -->
+    <div class="card">
+      <!-- <div class="table-toolbar">
+        <div class="search-bar">
+          <span class="search-label">Search:</span>
+          <input type="text" id="anaSearch" class="form-control" />
+          <button class="btn btn-primary" onclick="doSearch()">🔍</button>
+        </div>
+      </div> -->
+
+      <div class="table-wrap">
+        <table id="anaTable">
+          <thead>
+            <tr></tr>
+          </thead>
+          <tbody id="anaTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SINGLE MODAL (CREATE + EDIT) -->
+  <div class="modal-overlay" id="userModal">
+    <div class="modal">
+
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Add User</h3>
+        <button class="modal-close" onclick="closeModal('userModal')">✕</button>
+      </div>
+
+      <div id="cAlert" class="alert" style="display:none;"></div>
+
+      <div id="uAlert" class="alert" style="display:none;"></div>
+      <form id="createForm">
+
+        <input type="hidden" id="uId" />
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name <span class="required-star">*</span></label>
+            <input type="text" id="cName" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email <span class="required-star">*</span></label>
+            <input type="text" id="cEmail" class="form-control" />
+          </div>
+        </div>
+        <!-- <div class="page-actions"> -->
+        <div class="form-group">
+          <label class="form-label">Role <span class="required-star">*</span></label>
+          <select id="cRole" class="form-control" onchange="toggleState()">
+            <option value="analyst">Analyst</option>
+            <option value="manager">Manager</option>
+          </select>
+        </div>
+
+
+        <!-- STATE (ONLY FOR MANAGER) -->
+        <div class="form-group" id="stateWrap" style="display:none;">
+          <label class="form-label">State</label>
+
+          <div style="display:flex; gap:8px;">
+            <select id="cState" class="form-control"></select>
+
+            <button type="button" class="btn btn-outline" onclick="openModal('stateModal')">New</button>
+          </div></div>
+
+          <div style="display:flex;gap:10px;justify-content:flex-end;">
+            <button type="button" class="btn btn-outline" onclick="closeModal('userModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="cBtn">Save</button>
+          </div>
+
+      </form>
+
+    </div>
+  </div>
+  <div class="modal-overlay" id="stateModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Add New State</h3><button class="modal-close"
+          onclick="closeModal('stateModal')">✕</button>
+      </div>
+      <div id="sAlert" class="alert" style="display:none;"></div>
+      <form id="createStateForm">
+        <div class="form-group"><label class="form-label">State Name</label><input type="text" id="sName"
+            class="form-control" placeholder="e.g. Karnataka" required /></div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('stateModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="sBtn">Add State</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/static/js/base.js"></script>
+  <script src="/static/js/admin/users.js"></script>
+
+</body>
+
+</html>

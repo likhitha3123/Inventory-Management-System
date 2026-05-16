@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us — INVENTORY</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}"/>
+  <style>
+    .contact-wrap { display:grid; grid-template-columns:1fr 1.4fr; gap:48px; align-items:start; max-width:980px; margin:0 auto; padding:56px 24px; }
+    @media(max-width:800px){ .contact-wrap{grid-template-columns:1fr;gap:28px;} }
+    .info-card { background:#fff; border-radius:16px; padding:30px; box-shadow:0 2px 16px rgba(14,165,233,.07); border:1px solid #e0f2fe; }
+    .info-row  { display:flex; gap:14px; align-items:flex-start; margin-bottom:20px; }
+    .info-icon { width:38px; height:38px; border-radius:10px; background:#eff6ff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .info-title{ font-size:13px; font-weight:700; color:#1e293b; margin-bottom:3px; }
+    .info-desc { font-size:12px; color:#64748b; line-height:1.5; }
+    .form-card { background:#fff; border-radius:18px; padding:34px; box-shadow:0 6px 32px rgba(14,165,233,.1); border:1px solid #bae6fd; }
+    .form-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:520px){ .form-grid-2{grid-template-columns:1fr;} }
+    .fg { margin-bottom:14px; }
+    .fl { font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:.4px; margin-bottom:5px; display:block; }
+    .req { color:#ef4444; margin-left:2px; }
+    .fc { width:100%; padding:10px 13px; border:1.5px solid #e2e8f0; border-radius:9px; font-size:14px; color:#1e293b; font-family:inherit; background:#fafafa; transition:border .15s,box-shadow .15s; box-sizing:border-box; }
+    .fc:focus { outline:none; border-color:#0284c7; background:#fff; box-shadow:0 0 0 3px rgba(2,132,199,.1); }
+    .fc.err { border-color:#ef4444!important; background:#fff5f5!important; }
+    .ferr { font-size:11px; color:#ef4444; margin-top:4px; display:none; }
+    .ferr.show { display:block; }
+    /* Join type selector */
+    .join-pills { display:flex; gap:10px; }
+    .join-pill  { flex:1; padding:12px 10px; border:2px solid #e2e8f0; border-radius:10px; background:#fafafa; cursor:pointer; text-align:center; transition:all .18s; }
+    .join-pill:hover { border-color:#93c5fd; background:#eff6ff; }
+    .join-pill.selected-customer { border-color:#0284c7; background:#eff6ff; }
+    .join-pill.selected-supplier { border-color:#059669; background:#f0fdf4; }
+    .join-pill-icon { font-size:22px; margin-bottom:4px; }
+    .join-pill-label { font-size:12px; font-weight:700; color:#1e293b; }
+    .join-pill-desc  { font-size:10px; color:#64748b; margin-top:2px; }
+    /* Submit */
+    .submit-btn { width:100%; padding:13px; background:linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit; transition:all .22s; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .submit-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 6px 20px rgba(14,165,233,.4); }
+    .submit-btn:disabled { opacity:.6; cursor:not-allowed; }
+    .success-banner { background:#d1fae5; border:1.5px solid #6ee7b7; border-radius:10px; padding:16px 18px; margin-bottom:18px; font-size:14px; color:#065f46; display:flex; align-items:flex-start; gap:10px; }
+    .error-banner   { background:#fee2e2; border:1.5px solid #fca5a5; border-radius:10px; padding:16px 18px; margin-bottom:18px; font-size:14px; color:#991b1b; display:flex; align-items:flex-start; gap:10px; }
+  </style>
+</head>
+<body>
+
+<nav class="pub-nav">
+  <a href="{{ url_for('common.home') }}" class="nav-brand">
+    <div class="logo-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+    <span class="brand-name">INVENTORY</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('common.home') }}">Home</a></li>
+    <li><a href="{{ url_for('common.about') }}">About</a></li>
+    <li><a href="{{ url_for('common.features') }}">Features</a></li>
+    <li><a href="{{ url_for('common.contact') }}" class="active">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle">&#9776;</button>
+  <div class="nav-cta"><a href="{{ url_for('auth.login') }}" class="btn-get-started">Get Started →</a></div>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="hero-badge" style="justify-content:center;margin-bottom:16px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Get in Touch</div>
+    <h1 class="hero-title" style="margin-bottom:12px;">Contact <span>Us</span></h1>
+    <p class="hero-desc" style="text-align:center;margin:0 auto;max-width:480px;">Interested in joining our network as a customer or supplier? Send us a message and we'll reply directly to your email.</p>
+  </div>
+</div>
+
+<section style="background:linear-gradient(180deg,#f0f9ff,#f8fafc);">
+  <div class="contact-wrap">
+
+    <!-- Left info panel -->
+    <div>
+      <div class="info-card">
+        <h3 style="font-size:18px;font-weight:800;color:#1e293b;margin-bottom:6px;">Why contact us?</h3>
+        <p style="font-size:13px;color:#64748b;margin-bottom:24px;line-height:1.6;">Whether you want to supply products or purchase through our platform, we'd love to hear from you.</p>
+
+        <div class="info-row">
+          <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div><div class="info-title">Join as a Customer</div><div class="info-desc">Purchase inventory across multiple sites in your state. Get access to real-time stock, promotions, and delivery tracking.</div></div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><polygon points="3 22 21 22 21 8 13 2 3 8 3 22"/><line x1="9" y1="22" x2="9" y2="12"/><line x1="15" y1="22" x2="15" y2="12"/><rect x="9" y="12" width="6" height="6"/></svg></div>
+          <div><div class="info-title">Join as a Supplier</div><div class="info-desc">Supply products to our sites through our purchase order system. Get registered in our supplier directory for ongoing business.</div></div>
+        </div>
+
+        <div class="info-row" style="margin-bottom:0;">
+          <div class="info-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div><div class="info-title">Fast Reply</div><div class="info-desc">Our admin team reviews all enquiries and replies directly to your email, usually within 24 hours.</div></div>
+        </div>
+
+        <div style="margin-top:22px;background:#f8fafc;border-radius:10px;padding:14px 16px;border:1px solid #e2e8f0;">
+          <div style="font-size:12px;color:#64748b;line-height:1.6;">Already part of our network? <a href="{{ url_for('auth.login') }}" style="color:#0284c7;font-weight:700;text-decoration:none;">Sign in here →</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right form -->
+    <div class="form-card">
+      <h3 style="font-size:20px;font-weight:800;color:#1e293b;margin-bottom:4px;">Send us a message</h3>
+      <p style="font-size:13px;color:#64748b;margin-bottom:22px;">Fields marked <span style="color:#ef4444;font-weight:700;">*</span> are required.</p>
+
+      <div id="alertBox" style="display:none;"></div>
+
+      <form id="contactForm" autocomplete="off">
+
+        <!-- Name row -->
+        <div class="form-grid-2">
+          <div class="fg">
+            <label class="fl" for="fFirst">First Name <span class="req">*</span></label>
+            <input type="text" id="fFirst" class="fc" placeholder="Arjun" maxlength="80"/>
+            <div class="ferr" id="errFirst">First name is required.</div>
+          </div>
+          <div class="fg">
+            <label class="fl" for="fLast">Last Name</label>
+            <input type="text" id="fLast" class="fc" placeholder="Sharma" maxlength="80"/>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="fg">
+          <label class="fl" for="fEmail">Email Address <span class="req">*</span></label>
+          <input type="email" id="fEmail" class="fc" placeholder="arjun@company.com"/>
+          <div class="ferr" id="errEmail">Please enter a valid email address.</div>
+        </div>
+
+        <!-- Join type -->
+        <div class="fg">
+          <label class="fl">I want to join as <span class="req">*</span></label>
+          <input type="hidden" id="fJoinType" value=""/>
+          <div class="join-pills">
+            <div class="join-pill" id="pillCustomer" onclick="selectJoin('customer')">
+              <div class="join-pill-icon">🛒</div>
+              <div class="join-pill-label">Customer</div>
+              <div class="join-pill-desc">Purchase inventory</div>
+            </div>
+            <div class="join-pill" id="pillSupplier" onclick="selectJoin('supplier')">
+              <div class="join-pill-icon">🏭</div>
+              <div class="join-pill-label">Supplier</div>
+              <div class="join-pill-desc">Supply products</div>
+            </div>
+          </div>
+          <div class="ferr" id="errJoin">Please select whether you are joining as a customer or supplier.</div>
+        </div>
+
+        <!-- Message -->
+        <div class="fg">
+          <label class="fl" for="fMsg">Message <span class="req">*</span></label>
+          <textarea id="fMsg" class="fc" rows="4" placeholder="Tell us about your business, requirements, the products you deal with, your location, etc." style="resize:vertical;min-height:100px;"></textarea>
+          <div class="ferr" id="errMsg">Message is required.</div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span id="btnTxt">Send Message</span>
+        </button>
+
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<section class="cta-banner">
+  <h2>Already a member?</h2>
+  <p>Sign in to manage your orders and inventory.</p>
+  <a href="{{ url_for('auth.login') }}" class="btn-hero-white" style="display:inline-flex;align-items:center;gap:6px;">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    Sign In
+  </a>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-brand">📦 INVENTORY</div><p class="footer-desc">The complete inventory management platform for modern businesses.</p></div>
+    <div class="footer-col"><div class="footer-col-title">Product</div><a href="{{ url_for('common.features') }}">Features</a></div>
+    <div class="footer-col"><div class="footer-col-title">Company</div><a href="{{ url_for('common.about') }}">About</a><a href="{{ url_for('common.contact') }}">Contact</a></div>
+  </div>
+  <div class="footer-bottom">© 2025 INVENTORY Management System. All rights reserved.</div>
+</footer>
+
+<script>
+function selectJoin(type) {
+  document.getElementById('fJoinType').value = type;
+  document.getElementById('pillCustomer').className = 'join-pill' + (type==='customer' ? ' selected-customer' : '');
+  document.getElementById('pillSupplier').className = 'join-pill' + (type==='supplier' ? ' selected-supplier' : '');
+  document.getElementById('errJoin').classList.remove('show');
+  document.getElementById('fJoinType').classList.remove('err');
+}
+
+function showErr(fId, eId, msg) {
+  var f = document.getElementById(fId); if(f) f.classList.add('err');
+  var e = document.getElementById(eId); if(e){ if(msg) e.textContent=msg; e.classList.add('show'); }
+}
+function clearAllErrs() {
+  ['fFirst','fEmail','fMsg'].forEach(id=>{ var el=document.getElementById(id); if(el) el.classList.remove('err'); });
+  document.querySelectorAll('.ferr').forEach(el=>el.classList.remove('show'));
+}
+
+['fFirst','fEmail','fMsg'].forEach(id=>{
+  var el = document.getElementById(id);
+  if(el) el.addEventListener('input', ()=>{ el.classList.remove('err'); var err=document.getElementById('err'+id.slice(1,2).toUpperCase()+id.slice(2)); if(err) err.classList.remove('show'); });
+});
+
+document.getElementById('contactForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  clearAllErrs();
+  var alertBox = document.getElementById('alertBox');
+  alertBox.style.display = 'none';
+
+  var first   = document.getElementById('fFirst').value.trim();
+  var email   = document.getElementById('fEmail').value.trim();
+  var msg     = document.getElementById('fMsg').value.trim();
+  var jtype   = document.getElementById('fJoinType').value;
+
+  var valid = true;
+  if (!first)  { showErr('fFirst','errFirst'); valid=false; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('fEmail','errEmail'); valid=false; }
+  if (!jtype)  { document.getElementById('errJoin').classList.add('show'); valid=false; }
+  if (!msg)    { showErr('fMsg','errMsg'); valid=false; }
+
+  if (!valid) {
+    alertBox.innerHTML = '<div class="error-banner"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Please fix the highlighted fields.</div>';
+    alertBox.style.display = 'block';
+    return;
+  }
+
+  var btn = document.getElementById('submitBtn');
+  var btnTxt = document.getElementById('btnTxt');
+  btn.disabled = true; btnTxt.textContent = 'Sending…';
+
+  try {
+    var res = await fetch('/api/contact', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ first_name:first, last_name:document.getElementById('fLast').value.trim(), email:email, join_type:jtype, message:msg }) });
+    var data = await res.json();
+    if (res.ok && data.ok) {
+      alertBox.innerHTML = '<div class="success-banner"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg><div><strong>Message sent!</strong><br>'+data.message+'</div></div>';
+      alertBox.style.display='block';
+      document.getElementById('contactForm').reset();
+      document.getElementById('pillCustomer').className = 'join-pill';
+      document.getElementById('pillSupplier').className = 'join-pill';
+      document.getElementById('fJoinType').value = '';
+      window.scrollTo({top: alertBox.offsetTop - 80, behavior:'smooth'});
+    } else {
+      alertBox.innerHTML = '<div class="error-banner"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'+(data.error||'Something went wrong.')+'</div>';
+      alertBox.style.display='block';
+    }
+  } catch(err) {
+    alertBox.innerHTML = '<div class="error-banner">⚠️ Unable to connect. Please try again.</div>';
+    alertBox.style.display='block';
+  }
+  btn.disabled=false; btnTxt.textContent='Send Message';
+});
+
+(function(){
+  var btn=document.getElementById('navToggle'), links=document.querySelector('.nav-links');
+  if(!btn||!links) return;
+  btn.addEventListener('click',()=>{ links.classList.toggle('open'); btn.innerHTML=links.classList.contains('open')?"&#10005;":"&#9776;"; });
+})();
+</script>
+</body>
+</html>

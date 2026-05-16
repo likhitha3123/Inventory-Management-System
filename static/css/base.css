@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --sky-900: #0c4a6e;
+  --sky-800: #075985;
+  --sky-600: #0284c7;
+  --sky-500: #0ea5e9;
+
+  --slate-200: #e2e8f0;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BODY BACKGROUND (AUTH PAGES) */
+body {
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+
+  background: linear-gradient(140deg, var(--sky-900), var(--sky-800), #0891b2);
+
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NAVBAR */
+.pub-nav {
+  position: sticky;
+  top: 0;
+
+  height: 70px;
+  padding: 0 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+
+  z-index: 1000;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: white;
+}
+
+.logo-box {
+  width: 38px;
+  height: 38px;
+
+  background: linear-gradient(135deg, var(--sky-500), var(--sky-600));
+  border-radius: 10px;
+
+  display: grid;
+  place-items: center;
+}
+
+.brand-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.btn-get-started {
+  background: white;
+  color: var(--sky-700);
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13px;
+}

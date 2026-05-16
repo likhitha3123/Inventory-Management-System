@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About — INVENTORY</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}"/>
+</head>
+<body>
+
+<nav class="pub-nav">
+  <a href="{{ url_for('common.home') }}" class="nav-brand">
+    <div class="logo-box">📦</div>
+    <span class="brand-name">INVENTORY</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('common.home') }}">Home</a></li>
+    <li><a href="{{ url_for('common.about') }}" class="active">About</a></li>
+    <li><a href="{{ url_for('common.features') }}">Features</a></li>
+    <li><a href="{{ url_for('common.contact') }}">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+  <div class="nav-cta">
+    <a href="{{ url_for('auth.login') }}" class="btn-get-started">Get Started →</a>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="hero-badge" style="justify-content:center;margin-bottom:18px;">🏢 Our Story</div>
+    <h1 class="hero-title" style="margin-bottom:16px;">Built by inventory <span>experts</span>,<br/>for real businesses</h1>
+    <p class="hero-desc" style="margin:0 auto;text-align:center;">We started frustrated with clunky, expensive tools. So we built our own — and now help hundreds of businesses manage their stock smarter.</p>
+  </div>
+</div>
+
+<!-- MISSION -->
+<section style="background:#fff;">
+  <div class="about-grid">
+    <div>
+      <div class="section-tag">🎯 Our Mission</div>
+      <h2 class="section-title">Simplifying supply chains for every business</h2>
+      <p style="font-size:14px;color:#64748b;line-height:1.75;margin-bottom:16px;">We believe great inventory management shouldn't require a team of consultants or a six-figure software budget. Our platform brings enterprise-grade tools to businesses of all sizes.</p>
+      <p style="font-size:14px;color:#64748b;line-height:1.75;">Every feature we build starts with a real problem faced by real businesses. We obsess over simplicity, reliability, and insights that actually change how you make decisions.</p>
+      <!--  -->
+    </div>
+    <div style="height:100%; width: 100%;"><img src="{{ url_for('static', filename='images/tracking.png') }}" width="100%" style="border-radius: 5px; box-shadow:#0c4a6e 2px 3px 3px 5px;"></div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section style="background:#f8fafc;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-center">
+      <div class="section-tag">💡 Our Values</div>
+      <h2 class="section-title">What drives everything we build</h2>
+    </div>
+    <div class="value-grid">
+      <div class="value-card"><div class="value-icon">⚡</div><div class="value-title">Speed First</div><div class="value-desc">Every second counts in inventory. We build for performance so your team can move fast.</div></div>
+      <div class="value-card"><div class="value-icon">🔒</div><div class="value-title">Data Integrity</div><div class="value-desc">Your inventory data is your business. We treat it with the security it deserves.</div></div>
+      <div class="value-card"><div class="value-icon">🤝</div><div class="value-title">Customer Obsession</div><div class="value-desc">We listen, iterate, and improve. Every feature request is taken seriously.</div></div>
+      <div class="value-card"><div class="value-icon">🌱</div><div class="value-title">Sustainability</div><div class="value-desc">Less waste, smarter orders. We help reduce overstock and expired inventory.</div></div>
+      <div class="value-card"><div class="value-icon">📐</div><div class="value-title">Simple Design</div><div class="value-desc">Complex problems deserve simple interfaces. We strip away the noise.</div></div>
+      <div class="value-card"><div class="value-icon">🚀</div><div class="value-title">Continuous Growth</div><div class="value-desc">We ship features every week. Your feedback directly shapes what we build next.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-banner">
+  <h2>Want to join our journey?</h2>
+  <p>Whether as a customer or a teammate — we'd love to have you.</p>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+    <a href="{{ url_for('auth.login') }}" class="btn-hero-white" style="display:inline-flex;">Start Free Trial</a>
+    <a href="{{ url_for('common.contact') }}" class="btn-hero-outline" style="display:inline-flex;">Contact Us</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-brand">📦 INVENTORY</div><p class="footer-desc">The complete inventory management platform for modern businesses.</p></div>
+    <div class="footer-col"><div class="footer-col-title">Product</div><a href="{{ url_for('common.features') }}">Features</a></div>
+    <div class="footer-col"><div class="footer-col-title">Company</div><a href="{{ url_for('common.about') }}">About</a><a href="{{ url_for('common.contact') }}">Contact</a></div>
+    <div class="footer-col"><div class="footer-col-title">Support</div><a href="#">Help</a></div>
+  </div>
+  <div class="footer-bottom">© 2025 INVENTORY Management System. All rights reserved.</div>
+</footer>
+
+<script>
+(function(){
+  var btn = document.getElementById("navToggle");
+  var links = document.querySelector(".nav-links");
+  if (!btn || !links) return;
+  btn.addEventListener("click", function(){
+    links.classList.toggle("open");
+    btn.innerHTML = links.classList.contains("open") ? "&#10005;" : "&#9776;";
+  });
+  links.querySelectorAll("a").forEach(function(a){
+    a.addEventListener("click", function(){
+      links.classList.remove("open");
+      btn.innerHTML = "&#9776;";
+    });
+  });
+})();
+</script>
+</body>
+</html>

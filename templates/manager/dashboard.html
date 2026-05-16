@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dashboard — INVENTORY</title>
+<link rel="stylesheet" href="/static/css/theme.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+.chart-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid #e2e8f0;}
+.chart-title{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;color:#1e293b;margin-bottom:4px;}
+.chart-sub{font-size:11px;color:#94a3b8;margin-bottom:14px;}
+.chart-wrap{position:relative;height:200px;}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+@media(max-width:900px){.charts-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="brand"><div class="logo-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>INVENTORY</div><div class="tagline">Manager Portal</div></div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Overview</div>
+    <a href="/manager/dashboard" class="nav-link active"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
+    <div class="nav-section">My State</div>
+    <a href="/manager/sales-orders" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> Sales Orders</a>
+    <a href="/manager/inventory" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span> Inventory</a>
+    <a href="/manager/products" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Products</a>
+    <a href="/manager/sales" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span> Sales</a>
+    <a href="/manager/logistics" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span> Logistics</a>
+    <a href="/manager/sites" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><line x1="9" y1="22" x2="9" y2="12"/><line x1="15" y1="22" x2="15" y2="12"/><line x1="9" y1="12" x2="15" y2="12"/></svg></span> Sites</a>
+    <a href="/manager/purchase-orders" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></span> Purchase Orders</a>
+  </nav>
+  <div class="sidebar-footer"><div class="user-row"><div class="user-avatar">M</div><div><div class="user-name">Manager</div><div class="user-role">Manager</div></div></div></div>
+</aside>
+<header class="topnav">
+  <div class="topnav-left"><button class="sidebar-toggle" id="sidebarToggle">&#9776;</button><span class="topnav-heading">INVENTORY</span><span class="topnav-sep">/</span><span class="topnav-page">Dashboard</span></div>
+  <div class="topnav-right"><a href="/logout" class="btn-logout"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-2px;"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a></div>
+</header>
+<main class="main-content">
+  <div class="page-header"><div><h1 class="page-title">My State Dashboard</h1><p class="page-subtitle">Analytics for your allocated state.</p></div></div>
+
+  <!-- Stat Cards -->
+  <div class="grid g4 mb24">
+    <a href="/manager/sites" style="text-decoration:none;"><div class="stat-card"><div class="stat-icon si-sky"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><line x1="9" y1="22" x2="9" y2="12"/><line x1="15" y1="22" x2="15" y2="12"/><line x1="9" y1="12" x2="15" y2="12"/></svg></div><div><div class="stat-label">My Sites</div><div class="stat-value" id="statSites">—</div></div></div></a>
+    <a href="/manager/sales" style="text-decoration:none;"><div class="stat-card"><div class="stat-icon si-teal">💰</div><div><div class="stat-label">Revenue</div><div class="stat-value" id="statRevenue">—</div></div></div></a>
+    <a href="/manager/sales-orders" style="text-decoration:none;"><div class="stat-card"><div class="stat-icon si-orange"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div><div class="stat-label">Pending Orders</div><div class="stat-value" id="statOrders">—</div></div></div></a>
+    <a href="/manager/inventory" style="text-decoration:none;"><div class="stat-card"><div class="stat-icon si-red">⚠️</div><div><div class="stat-label">Low Stock</div><div class="stat-value" id="statLow">—</div></div></div></a>
+  </div>
+
+  <!-- Charts Row 1 -->
+  <div class="charts-grid" style="grid-template-columns:3fr 2fr;">
+    <div class="chart-card">
+      <div class="chart-title">Revenue — By Months</div>
+      <div class="chart-sub">Daily revenue trend for your sites</div>
+      <div class="chart-wrap"><canvas id="chartRevenue"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Top Products by Revenue</div>
+      <div class="chart-sub">Best performing products in your state</div>
+      <div class="chart-wrap"><canvas id="chartTopProducts"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Charts Row 2 -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Sales Order Status</div>
+      <div class="chart-sub">Pending · Accepted · Rejected</div>
+      <div class="chart-wrap" style="height:180px;"><canvas id="chartSOStatus"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Shipment Status</div>
+      <div class="chart-sub">Pending · In Transit · Delivered</div>
+      <div class="chart-wrap" style="height:180px;"><canvas id="chartShipment"></canvas></div>
+    </div>
+  </div>
+</main>
+<script src="/static/js/base.js"></script>
+<script src="/static/js/manager/dashboard.js"></script>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+</body></html>

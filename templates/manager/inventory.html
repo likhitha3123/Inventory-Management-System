@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Inventory — INVENTORY</title>
+  <link rel="stylesheet" href="/static/css/theme.css"/>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="brand"><div class="logo-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>INVENTORY</div><div class="tagline">Manager Portal</div></div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Overview</div>
+    <a href="/manager/dashboard" class="nav-link" data-page="dashboard"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
+    <div class="nav-section">My State</div>
+    <!-- <a href="/manager/orders"    class="nav-link" data-page="orders"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg></span> Orders</a> -->
+    <a href="/manager/sales-orders" class="nav-link" data-page="sales-orders"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> Sales Orders</a>
+    <a href="/manager/inventory" class="nav-link" data-page="inventory"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span> Inventory</a>
+    <a href="/manager/products"  class="nav-link" data-page="products"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span> Products</a>
+    <a href="/manager/sales"     class="nav-link" data-page="sales"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span> Sales</a>
+    <a href="/manager/logistics" class="nav-link" data-page="logistics"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span> Logistics</a>
+    <a href="/manager/sites"     class="nav-link" data-page="sites"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><line x1="9" y1="22" x2="9" y2="12"/><line x1="15" y1="22" x2="15" y2="12"/><line x1="9" y1="12" x2="15" y2="12"/></svg></span> Sites</a>
+    <a href="/manager/purchase-orders" class="nav-link" data-page="purchase-orders"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg></span> Purchase Orders</a>
+  </nav>
+  <div class="sidebar-footer"><div class="user-row"><div class="user-avatar">M</div><div><div class="user-name">Manager</div><div class="user-role">Manager</div></div></div></div>
+</aside>
+
+<header class="topnav">
+  <div class="topnav-left">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">&#9776;</button>
+    <span class="topnav-heading">INVENTORY</span><span class="topnav-sep">/</span><span class="topnav-page">Inventory</span>
+  </div>
+  <div class="topnav-right"><a href="/logout" class="btn-logout"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-2px;"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a></div>
+</header>
+
+<main class="main-content">
+  <div class="page-header">
+    <div><h1 class="page-title">Inventory</h1><p class="page-subtitle" id="subtitle">Loading…</p></div>
+    
+  </div>
+  <div class="card">
+    <div class="table-toolbar">
+      <div class="filters">
+      </div>
+      <div class="search-bar">
+        <span class="search-label">Search:</span>
+        <input type="text" id="search" class="form-control" placeholder="Search site, product…"/>
+        <button class="btn btn-primary btn-search" onclick="doSearch()">🔍 Search</button>
+      </div>
+    </div>
+    
+    <div class="table-wrap"><table id="invTable">
+      <thead><tr></tr></thead>
+      <tbody id="tbody"><tr><td colspan="6" style="text-align:center;padding:30px;color:#94a3b8;">Loading…</td></tr></tbody>
+    </table></div>
+    <div id="pgn"></div>
+  </div>
+</main>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<script src="/static/js/base.js"></script>
+<script src="/static/js/manager/inventory.js"></script>
+</body>
+</html>

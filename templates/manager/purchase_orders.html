@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Purchase Orders — INVENTORY</title>
+  <link rel="stylesheet" href="/static/css/theme.css" />
+  <style>
+    .po-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .po-draft {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .po-sent {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .po-received {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .po-cancelled {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand">
+        <div class="logo-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="rgba(255,255,255,0.9)" stroke-width="2">
+            <path
+              d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg></div>INVENTORY
+      </div>
+      <div class="tagline">Manager Portal</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Overview</div>
+      <a href="/manager/dashboard" class="nav-link"><span class="nav-icon"><svg width="16" height="16"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg></span> Dashboard</a>
+      <div class="nav-section">My State</div>
+      <!-- <a href="/manager/orders" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg></span> Orders</a> -->
+      <a href="/manager/sales-orders" class="nav-link" data-page="sales-orders"><span class="nav-icon"><svg width="16"
+            height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg></span> Sales Orders</a>
+      <a href="/manager/inventory" class="nav-link"><span class="nav-icon"><svg width="16" height="16"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+            <line x1="12" y1="17" x2="12" y2="21" />
+          </svg></span> Inventory</a>
+      <a href="/manager/products" class="nav-link"><span class="nav-icon"><svg width="16" height="16"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg></span> Products</a>
+      <a href="/manager/sales" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+            <polyline points="17 6 23 6 23 12" />
+          </svg></span> Sales</a>
+      <a href="/manager/logistics" class="nav-link"><span class="nav-icon"><svg width="16" height="16"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="1" y="3" width="15" height="13" />
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+            <circle cx="5.5" cy="18.5" r="2.5" />
+            <circle cx="18.5" cy="18.5" r="2.5" />
+          </svg></span> Logistics</a>
+      <a href="/manager/sites" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            <line x1="9" y1="22" x2="9" y2="12" />
+            <line x1="15" y1="22" x2="15" y2="12" />
+            <line x1="9" y1="12" x2="15" y2="12" />
+          </svg></span> Sites</a>
+      <a href="/manager/purchase-orders" class="nav-link active"><span class="nav-icon"><svg width="16" height="16"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+          </svg></span> Purchase Orders</a>
+      <a href="/manager/customers" class="nav-link" data-page="customers"><span class="nav-icon"><svg width="16"
+            height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg></span> Customers</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar">M</div>
+        <div>
+          <div class="user-name">Manager</div>
+          <div class="user-role">Manager</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <header class="topnav">
+    <div class="topnav-left"><button class="sidebar-toggle" id="sidebarToggle">&#9776;</button><span
+        class="topnav-heading">INVENTORY</span><span class="topnav-sep">/</span><span class="topnav-page">Purchase
+        Orders</span></div>
+    <div class="topnav-right"><a href="/logout" class="btn-logout"><svg width="15" height="15" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-2px;">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg> Logout</a></div>
+  </header>
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Purchase Orders</h1>
+        <p class="page-subtitle" id="subtitle">Your state's purchase orders</p>
+      </div>
+      <div class="page-actions"><button class="btn btn-primary" onclick="openModal('createModal')">+ New PO</button>
+      </div>
+    </div>
+
+    <div class="grid g4 mb24">
+      <div class="stat-card">
+        <div class="stat-icon si-sky"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
+          </svg></div>
+        <div>
+          <div class="stat-label">Total POs</div>
+          <div class="stat-value" id="sTotal">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-teal">📤</div>
+        <div>
+          <div class="stat-label">Sent</div>
+          <div class="stat-value" id="sSent">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-green"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12" />
+          </svg></div>
+        <div>
+          <div class="stat-label">Received</div>
+          <div class="stat-value" id="sReceived">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-red"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></div>
+        <div>
+          <div class="stat-label">Cancelled</div>
+          <div class="stat-value" id="sCancelled">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-toolbar">
+        <div class="filters">
+          <select class="form-control" style="width:160px;" id="fStatus" onchange="load(1)">
+            <option value="">All Statuses</option>
+            <option value="draft">Draft</option>
+            <option value="sent">Sent</option>
+            <option value="received">Received</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="search-bar"><button class="btn btn-primary btn-search" style="min-width:100px; text-align: center;"
+            onclick="openReturnModal('purchase','/admin')">Return</button></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Supplier</th>
+              <th>Site</th>
+              <th>Product</th>
+              <th>Status</th>
+              <th>View</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr>
+              <td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;">Loading…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="pgn"></div>
+    </div>
+  </main>
+
+  <!-- CREATE PO MODAL -->
+  <div class="modal-overlay" id="createModal">
+    <div class="modal" style="max-width:600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">New Purchase Order</h3><button class="modal-close"
+          onclick="closeModal('createModal')">✕</button>
+      </div>
+      <div id="cAlert" class="alert" style="display:none;"></div>
+      <form id="createForm">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Supplier<span class="required-star"><span
+                  class="required-star">*</span></span></label>
+            <select id="cpSupplier" class="form-control" required>
+              <option value="">— Select Supplier —</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Site (Your State)<span class="required-star"><span
+                  class="required-star">*</span></span></label>
+            <select id="cpSite" class="form-control" required>
+              <option value="">— Select Site —</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Product<span class="required-star"><span
+                  class="required-star">*</span></span></label>
+            <select id="cpProduct" class="form-control" required>
+              <option value="">— Select Product —</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Quantity<span class="required-star"><span
+                  class="required-star">*</span></span></label>
+            <input type="number" id="cpQty" class="form-control" min="1" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Order Date</label>
+            <input type="datetime-local" id="cpOrderDate" class="form-control" readonly />
+          </div>
+          <div class="form-group"><label class="form-label">Expected Delivery<span class="required-star"><span
+                  class="required-star">*</span></span></label>
+            <input type="date" id="cpExpDel" class="form-control" required />
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('createModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="cBtn">Place Order &amp; Notify Supplier</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/static/js/base.js"></script>
+  <script>
+    var allPOs = [], curPage = 1, suppliers = [], sites = [], products = [];
+
+    async function init() {
+      document.getElementById('cpOrderDate').value = new Date().toISOString().slice(0, 16);
+      var [supRes, siteRes, prodRes] = await Promise.all([
+        fetch('/manager/api/suppliers'),
+        fetch('/manager/api/sites'),
+        fetch('/manager/api/products?dropdown=1')
+      ]);
+      suppliers = (await supRes.json()).items || [];
+      sites = (await siteRes.json()).items || [];
+      products = (await prodRes.json()).items || [];
+
+      document.getElementById('cpSupplier').innerHTML = '<option value="">— Select Supplier —</option>' +
+        suppliers.map(s => `<option value="${s.id}">${s.supplier_pk} — ${s.supplier_name}</option>`).join('');
+      document.getElementById('cpSite').innerHTML = '<option value="">— Select Site —</option>' +
+        sites.map(s => `<option value="${s.site_id}">${s.site_id} — ${s.site_name}</option>`).join('');
+      document.getElementById('cpProduct').innerHTML = '<option value="">— Select Product —</option>' +
+        products.map(p => `<option value="${p.product_id}">${p.product_id} — ${p.product_name}</option>`).join('');
+
+      await load(1);
+    }
+
+    async function load(page) {
+      curPage = page;
+      var status = document.getElementById('fStatus').value;
+      var url = '/manager/api/purchase-orders?page=' + page + (status ? '&status=' + status : '');
+      var d = await fetch(url).then(r => r.json());
+      allPOs = d.items || [];
+      document.getElementById('subtitle').textContent = fmt(d.total) + ' purchase orders for your sites.';
+      document.getElementById('sTotal').textContent = d.total;
+      document.getElementById('sSent').textContent = allPOs.filter(p => p.status === 'sent').length;
+      document.getElementById('sReceived').textContent = allPOs.filter(p => p.status === 'received').length;
+      document.getElementById('sCancelled').textContent = allPOs.filter(p => p.status === 'cancelled').length;
+      renderRows(allPOs);
+      document.getElementById('pgn').innerHTML = buildPagination(d, load);
+    }
+
+    function statusBadgePO(s) {
+      var cfg = { draft: { bg: '#f1f5f9', color: '#64748b' }, sent: { bg: '#dbeafe', color: '#1d4ed8' }, received: { bg: '#dcfce7', color: '#15803d' }, cancelled: { bg: '#fee2e2', color: '#dc2626' } };
+      var c = cfg[s] || cfg.draft;
+      return `<span style="display:inline-flex;align-items:center;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:700;background:${c.bg};color:${c.color};">${s.charAt(0).toUpperCase() + s.slice(1)}</span>`;
+    }
+
+    var _poCache = [];
+    function renderRows(items) {
+      _poCache = items;
+      if (!items.length) {
+        document.getElementById('tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;">No purchase orders found.</td></tr>';
+        return;
+      }
+      document.getElementById('tbody').innerHTML = items.map((po, idx) => `
+    <tr>
+      <td><strong>${po.supplier_name}</strong></td>
+      <td>${badge(po.site_id, 'sky')}</td>
+      <td style="font-size:12px;">${po.product_id}</td>
+      <td>${statusBadgePO(po.status)}</td>
+      <td class="action-btns">
+        <button class="btn btn-icon btn-icon-view" title="View Details" onclick="viewPODetail(${idx})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button></td>
+        <td>
+        ${(po.status === 'sent' || po.status === 'draft') ? `<button class="btn btn-icon btn-icon-approve" title="Mark Received" onclick="markReceived(${po.id})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>`: ''}
+        ${(po.status !== 'received' && po.status !== 'cancelled') ? `<button class="btn btn-icon btn-icon-delete" title="Cancel PO" onclick="cancelPO(${po.id})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>`: ''}
+        ${po.status === 'received' ? ` <span class="badge badge-success" style="font-size:11px;">✓ Complete</span>` :''}</td>
+    </tr>`).join('');
+    }
+
+    function viewPODetail(idx) {
+      var po = _poCache[idx];
+      if (!po) return;
+      showDetailModal('Purchase Order Details', `
+    <div class="detail-grid">
+      <div class="dg-row"><span class="dg-label">PO Number</span><span class="dg-val"><strong style="color:#0284c7;">${po.po_number || '—'}</strong></span></div>
+      <div class="dg-row"><span class="dg-label">Supplier</span><span class="dg-val">${po.supplier_name}</span></div>
+      <div class="dg-row"><span class="dg-label">Site</span><span class="dg-val">${badge(po.site_id, 'sky')}</span></div>
+      <div class="dg-row"><span class="dg-label">Product</span><span class="dg-val">${po.product_id}<br><span style="font-size:11px;color:#64748b;">${po.product_name || ''}</span></span></div>
+      <div class="dg-row"><span class="dg-label">Quantity</span><span class="dg-val"><strong>${fmt(po.quantity)}</strong></span></div>
+      <div class="dg-row"><span class="dg-label">Order Date</span><span class="dg-val">${(po.order_date || '').slice(0, 10) || '—'}</span></div>
+      <div class="dg-row"><span class="dg-label">Exp. Delivery</span><span class="dg-val">${po.expected_delivery || '—'}</span></div>
+      <div class="dg-row"><span class="dg-label">Status</span><span class="dg-val">${statusBadgePO(po.status)}</span></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap;">
+      <button class="btn btn-outline" onclick="closeDetailModal()">Close</button>
+      <button class="btn-invoice" onclick="downloadPOInvoice(${po.id})" style="background:linear-gradient(135deg,#ea580c,#c2410c);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Invoice
+      </button>
+      ${(po.status === 'sent' || po.status === 'draft') ? `<button class="btn btn-success" onclick="closeDetailModal();markReceived(${po.id})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Mark Received
+      </button>`: ''}
+      ${(po.status !== 'received' && po.status !== 'cancelled') ? `<button class="btn btn-danger" onclick="closeDetailModal();cancelPO(${po.id})">Cancel PO</button>` : ''}
+    </div>
+  `);
+    }
+
+    async function markReceived(id) {
+      if (!confirm('Mark this Purchase Order as Received? Inventory will be updated.')) return;
+      var res = await fetch('/manager/api/purchase-orders/' + id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'received' }) });
+      var d = await res.json();
+      if (d.ok) { load(curPage); showToast('Purchase Order marked as received. Inventory updated.', 'success'); }
+      else showToast(friendlyError(d.error, 'purchase order'), 'error');
+    }
+
+    async function cancelPO(id) {
+      if (!confirm('Cancel this Purchase Order?')) return;
+      var res = await fetch('/manager/api/purchase-orders/' + id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'cancelled' }) });
+      var d = await res.json();
+      if (d.ok) { load(curPage); showToast('Purchase Order cancelled.', 'success'); }
+      else showToast(friendlyError(d.error, 'purchase order'), 'error');
+    }
+
+    function downloadPOInvoice(id) {
+      showToast('Generating invoice PDF…', 'success');
+      var a = document.createElement('a'); a.href = '/admin/api/invoices/purchase-order/' + id; a.download = '';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+
+    document.getElementById('createForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var btn = document.getElementById('cBtn');
+      btn.disabled = true; btn.textContent = 'Placing…';
+      var body = {
+        supplier_id: document.getElementById('cpSupplier').value,
+        site_id: document.getElementById('cpSite').value,
+        product_id: document.getElementById('cpProduct').value,
+        quantity: document.getElementById('cpQty').value,
+        expected_delivery: document.getElementById('cpExpDel').value
+      };
+      var res = await fetch('/manager/api/purchase-orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      var d = await res.json();
+      btn.disabled = false; btn.textContent = 'Place Order & Notify Supplier';
+      if (d.ok) {
+        closeModal('createModal'); this.reset();
+        document.getElementById('cpOrderDate').value = new Date().toISOString().slice(0, 16);
+        load(1); showToast('PO ' + d.po_number + ' placed & supplier notified!', 'success');
+      } else {
+        showAlert('cAlert', friendlyError(d.error, 'purchase order'), 'error');
+      }
+    });
+
+    window.onload = init;
+  </script>
+  <script src="/static/js/return_modal.js"></script>
+</body>
+
+</html>

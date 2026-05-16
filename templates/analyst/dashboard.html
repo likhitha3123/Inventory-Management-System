@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Analytics Dashboard — INVENTORY</title>
+<link rel="stylesheet" href="/static/css/theme.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ── Dashboard card system ─────────────────────────────── */
+.an-card {
+  background:#fff; border-radius:var(--radius); padding:18px 20px;
+  box-shadow:var(--shadow-sm); border:1px solid var(--slate-100); min-width:0;
+}
+.an-card h3 {
+  font-family:'Outfit',sans-serif; font-size:13px; font-weight:700;
+  color:var(--slate-800); margin:0 0 2px; display:flex; align-items:center; gap:6px;
+}
+.an-card .sub { font-size:11px; color:var(--slate-400); margin:0 0 12px; line-height:1.5; }
+/* Canvas sizing — compact, no giant donuts */
+.an-card canvas { width:100% !important; }
+.ch-h-240 { max-height:240px; }
+.ch-h-200 { max-height:200px; }
+.ch-h-180 { max-height:180px; }
+.ch-h-300 { max-height:300px; }
+.ch-legend { display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:10px; }
+.ch-legend span { display:inline-flex; align-items:center; gap:4px; font-size:11px; color:var(--slate-600); }
+.ch-legend span b { width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
+
+/* ── KPI strip ─────────────────────────────────────────── */
+.kpi-strip {
+  display:grid; gap:10px; margin-bottom:18px;
+  grid-template-columns: repeat(6,1fr);
+}
+@media(max-width:1100px){ .kpi-strip{ grid-template-columns:repeat(4,1fr); } }
+@media(max-width:640px){  .kpi-strip{ grid-template-columns:repeat(3,1fr); } }
+@media(max-width:400px){  .kpi-strip{ grid-template-columns:repeat(2,1fr); } }
+.kpi-box {
+  background:#fff; border-radius:var(--radius); padding:12px 10px;
+  box-shadow:var(--shadow-sm); border:1px solid var(--slate-100); text-align:center;
+}
+.kpi-box .kv {
+  font-family:'Outfit',sans-serif; font-size:17px; font-weight:700;
+  color:var(--slate-800); line-height:1.2; word-break:break-all;
+}
+.kpi-box .kl { font-size:9px; color:var(--slate-500); margin-top:2px; text-transform:uppercase; letter-spacing:.4px; }
+
+/* ── Chart grid ────────────────────────────────────────── */
+.cg1 { display:grid; grid-template-columns:1fr; gap:14px; margin-bottom:14px; }
+.cg2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.cg3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px; }
+/* 60/40 split — useful for bar+donut pairs so bar gets more room */
+.cg-60-40 { display:grid; grid-template-columns:3fr 2fr; gap:14px; margin-bottom:14px; }
+/* 40/60 split */
+.cg-40-60 { display:grid; grid-template-columns:2fr 3fr; gap:14px; margin-bottom:14px; }
+@media(max-width:900px){ .cg3{ grid-template-columns:1fr 1fr; } }
+@media(max-width:640px){ .cg2,.cg3,.cg-60-40,.cg-40-60{ grid-template-columns:1fr; } }
+
+/* ── Section divider ───────────────────────────────────── */
+.s-divider {
+  display:flex; align-items:center; gap:10px;
+  margin:20px 0 14px;
+}
+.s-divider-label {
+  font-family:'Outfit',sans-serif; font-size:12px; font-weight:700;
+  color:var(--sky-700); text-transform:uppercase; letter-spacing:.6px; white-space:nowrap;
+}
+.s-divider-line { flex:1; height:1px; background:var(--slate-200); }
+
+/* ── Page banner ───────────────────────────────────────── */
+.pg-banner { border-radius:14px; padding:14px 20px; margin-bottom:18px;
+  display:flex; align-items:center; gap:14px; color:#fff; }
+.pg-banner h2 { font-family:'Outfit',sans-serif; font-size:17px; font-weight:800; margin:0; }
+.pg-banner p  { font-size:12px; opacity:.75; margin:3px 0 0; }
+
+/* ── Error box ─────────────────────────────────────────── */
+.err-box { display:none; background:#fee2e2; border:1px solid #fca5a5; color:#991b1b;
+  padding:10px 14px; border-radius:9px; margin-bottom:14px; font-size:12px; }
+
+/* ── Donut label overlay ───────────────────────────────── */
+.donut-wrap { position:relative; display:flex; justify-content:center; }
+.donut-center {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  text-align:center; pointer-events:none;
+}
+.donut-center .dc-val { font-family:'Outfit',sans-serif; font-size:16px; font-weight:700; color:var(--slate-800); }
+.donut-center .dc-lbl { font-size:9px; color:var(--slate-500); text-transform:uppercase; letter-spacing:.4px; }
+</style>
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand"><div class="logo-icon">📊</div>INVENTORY</div>
+    <div class="tagline">Analytics Portal</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Overview</div>
+    <a href="/analyst/dashboard" class="nav-link active"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Dashboard</a>
+    <div class="nav-section">Analytics</div>
+    <a href="/analyst/sales"      class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span> Sales</a>
+    <a href="/analyst/inventory"  class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span> Inventory</a>
+    <a href="/analyst/promotions" class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg></span> Promotions</a>
+    <a href="/analyst/logistics"  class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span> Logistics</a>
+    <a href="/analyst/orders"     class="nav-link"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> Orders</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-row">
+      <div class="user-avatar">AN</div>
+      <div><div class="user-name">Analyst</div><div class="user-role">Data Analyst</div></div>
+    </div>
+  </div>
+</aside>
+
+<header class="topnav">
+  <div class="topnav-left">
+    <button class="sidebar-toggle" id="sidebarToggle">&#9776;</button>
+    <span class="topnav-heading">INVENTORY</span>
+    <span class="topnav-sep">/</span>
+    <span class="topnav-page">Analytics Dashboard</span>
+  </div>
+  <div class="topnav-right"><a href="/logout" class="btn-logout"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-2px;"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a></div>
+</header>
+
+<main class="main-content">
+  <div class="pg-banner" style="background:linear-gradient(135deg,var(--sky-800),var(--sky-900));">
+    <span style="font-size:28px;">📊</span>
+    <div><h2>Analytics Dashboard</h2><p>All key metrics and charts across sales, inventory, logistics, and promotions.</p></div>
+  </div>
+  <div id="errBox" class="err-box"></div>
+
+  <!-- ══ KPI ROW ══════════════════════════════════════════ -->
+  <div class="kpi-strip">
+    <div class="kpi-box"><div class="kv" id="kRevenue">—</div><div class="kl">Revenue</div></div>
+    <div class="kpi-box"><div class="kv" id="kSales">—</div><div class="kl">Sales</div></div>
+    <div class="kpi-box"><div class="kv" id="kProducts">—</div><div class="kl">Products</div></div>
+    <div class="kpi-box"><div class="kv" id="kSites">—</div><div class="kl">Sites</div></div>
+    <div class="kpi-box"><div class="kv" id="kShipments">—</div><div class="kl">Shipments</div></div>
+    <div class="kpi-box"><div class="kv" id="kOrders">—</div><div class="kl">Orders</div></div>
+    <div class="kpi-box"><div class="kv" id="kManagers">—</div><div class="kl">Managers</div></div>
+    <div class="kpi-box"><div class="kv" id="kLowStock">—</div><div class="kl">Low Stock ⚠</div></div>
+    <div class="kpi-box"><div class="kv" id="kDelivered">—</div><div class="kl">Delivered</div></div>
+    <div class="kpi-box"><div class="kv" id="kPending">—</div><div class="kl">Pending</div></div>
+    <div class="kpi-box"><div class="kv" id="kInventory">—</div><div class="kl">Inventory</div></div>
+    <div class="kpi-box"><div class="kv" id="kPromos">—</div><div class="kl">Promotions</div></div>
+  </div>
+
+  <!-- ══ SALES SECTION ════════════════════════════════════ -->
+  <div class="s-divider"><span class="s-divider-label">📈 Sales</span><div class="s-divider-line"></div></div>
+
+  <!-- #1 Monthly Revenue + Units grouped bar (replaces line) -->
+  <div class="cg1">
+    <div class="an-card">
+      <h3>📅 Monthly Revenue &amp; Units Sold</h3>
+      <p class="sub">Grouped bar per month — blue = revenue (₹), teal = units sold. Dual Y-axis so both series scale independently.</p>
+      <canvas id="cMonthly" class="ch-h-240"></canvas>
+    </div>
+  </div>
+
+  <!-- #2 Seasonal quarterly revenue (new) -->
+  <div class="cg-60-40">
+    <div class="an-card">
+      <h3>🏪 Revenue by Site</h3>
+      <p class="sub">Sites ranked by revenue — longest bar = top performer.</p>
+      <canvas id="cRevSite" class="ch-h-200"></canvas>
+    </div>
+    <div class="an-card">
+      <h3>🌤 Seasonal Revenue by Quarter</h3>
+      <p class="sub">Proportion of annual revenue per quarter. Larger slice = stronger season.</p>
+      <canvas id="cSeasonQ" class="ch-h-200"></canvas>
+    </div>
+  </div>
+
+  <!-- Site donut + Top products bar -->
+  <div class="cg-40-60">
+    <div class="an-card">
+      <h3>🥧 Site Revenue Share</h3>
+      <p class="sub">Proportional contribution — top 8 sites.</p>
+      <div class="donut-wrap">
+        <canvas id="cSitePie" class="ch-h-200"></canvas>
+        <div class="donut-center"><div class="dc-val" id="dcSites">—</div><div class="dc-lbl">Sites</div></div>
+      </div>
+      <div class="ch-legend" id="lgSitePie"></div>
+    </div>
+    <div class="an-card">
+      <h3>🏆 Top 10 Products by Units Sold</h3>
+      <p class="sub">Best-selling products. Longer bar = more units sold.</p>
+      <canvas id="cTopProducts" class="ch-h-240"></canvas>
+    </div>
+  </div>
+
+  <!-- Revenue by Category + Order status -->
+  <div class="cg-60-40">
+    <div class="an-card">
+      <h3>🗂 Revenue by Product Category</h3>
+      <p class="sub">Horizontal bars — easy comparison across all categories.</p>
+      <canvas id="cRevCategory" class="ch-h-200"></canvas>
+    </div>
+    <div class="an-card">
+      <h3>📋 Order Status</h3>
+      <p class="sub">Order counts by status — bars make exact numbers easier to read.</p>
+      <div class="donut-wrap">
+        <canvas id="cOrderStatus" class="ch-h-200"></canvas>
+        <div class="donut-center"><div class="dc-val" id="dcOrders">—</div><div class="dc-lbl">Orders</div></div>
+      </div>
+      <div class="ch-legend" id="lgOrderStatus"></div>
+    </div>
+  </div>
+
+  <!-- ══ INVENTORY SECTION ═════════════════════════════════ -->
+  <div class="s-divider"><span class="s-divider-label">📦 Inventory</span><div class="s-divider-line"></div></div>
+
+  <!-- #4 Inventory Turnover — bubble chart (not bar) -->
+  <div class="cg1">
+    <div class="an-card">
+      <h3>🔄 Inventory Turnover Rate by Category</h3>
+      <p class="sub">Bubble chart: X = avg stock held, Y = turnover rate (units sold ÷ avg stock). Bubble size = total revenue. <strong style="color:var(--success)">Top-right = fast-moving</strong>, <strong style="color:var(--danger)">bottom-left = slow-moving</strong>.</p>
+      <canvas id="cTurnover" class="ch-h-240"></canvas>
+    </div>
+  </div>
+
+  <!-- #5 Stock vs Sales scatter + Stock by site stacked -->
+  <div class="cg2">
+    <div class="an-card">
+      <h3>🔵 Stock Level vs Sales Volume</h3>
+      <p class="sub">Each dot = one product. <span style="color:#ef4444">■</span> overstocked (high stock, low sales) · <span style="color:#f59e0b">■</span> understocked · <span style="color:#0ea5e9">■</span> healthy.</p>
+      <canvas id="cStockVsSales" class="ch-h-240"></canvas>
+    </div>
+    <div class="an-card">
+      <h3>🏗 Inventory Levels by Site</h3>
+      <p class="sub">Line chart per inventory component across top sites — easier to read than stacked bars. Toggle series in legend.</p>
+      <!-- ALTERNATIVE: stacked bar code is commented below. To switch, uncomment cInvStacked and comment cInvLine -->
+      <canvas id="cInvLine" class="ch-h-240"></canvas>
+      <!--
+      <p class="sub" style="display:none">Stacked bar alternative — uncomment canvas below and comment cInvLine above</p>
+      <canvas id="cInvStacked" class="ch-h-240" style="display:none"></canvas>
+      -->
+    </div>
+  </div>
+
+  <!-- Stock vs Replenishment grouped bar -->
+  <div class="cg2">
+    <div class="an-card">
+      <h3>⚖ Stock vs Replenishment by Site</h3>
+      <p class="sub">Side-by-side ending stock vs replenishment received at top 8 sites.</p>
+      <canvas id="cStockVsReplen" class="ch-h-200"></canvas>
+    </div>
+    <div class="an-card">
+      <h3>📬 Delivery Status</h3>
+      <p class="sub">Delivered vs in-transit vs pending shipments.</p>
+      <div class="donut-wrap">
+        <canvas id="cDelivery" class="ch-h-200"></canvas>
+        <div class="donut-center"><div class="dc-val" id="dcShip">—</div><div class="dc-lbl">Shipments</div></div>
+      </div>
+      <div class="ch-legend" id="lgDelivery"></div>
+    </div>
+  </div>
+
+  <!-- ══ LOGISTICS SECTION ══════════════════════════════════ -->
+  <div class="s-divider"><span class="s-divider-label">🚚 Logistics</span><div class="s-divider-line"></div></div>
+
+  <!-- #9 Avg delivery throughput + Transport mode -->
+  <div class="cg2">
+    <div class="an-card">
+      <h3>🚀 Avg Delivery Throughput by Site</h3>
+      <p class="sub">Line shows avg units per shipment across sites — peaks reveal high-throughput locations.</p>
+      <canvas id="cDeliveryThru" class="ch-h-200"></canvas>
+    </div>
+    <div class="an-card">
+      <h3>🚛 Shipments by Transport Mode</h3>
+      <p class="sub">Proportional split across road, air, rail, sea and courier modes.</p>
+      <div class="donut-wrap"><canvas id="cTransport" class="ch-h-200"></canvas></div>
+      <div class="ch-legend" id="lgTransport"></div>
+    </div>
+  </div>
+
+  <!-- Shipments by site -->
+  <div class="cg1">
+    <div class="an-card">
+      <h3>📦 Shipments by Site</h3>
+      <p class="sub">Which sites handle the most shipment volume.</p>
+      <canvas id="cShipSite" class="ch-h-180"></canvas>
+    </div>
+  </div>
+
+  <!-- ══ CUSTOMERS & PROMOTIONS ══════════════════════════════ -->
+  <div class="s-divider"><span class="s-divider-label">👥 Customers &amp; Promotions</span><div class="s-divider-line"></div></div>
+
+  <!-- #7 Customer age + #8 Promo effectiveness -->
+  <div class="cg2">
+    <div class="an-card">
+      <h3>🎂 Customer Distribution by Age Group</h3>
+      <p class="sub">Number of customers in each age bracket. Reveals dominant demographic for targeted campaigns.</p>
+      <canvas id="cAgeGroup" class="ch-h-200"></canvas>
+    </div>
+    <div class="an-card">
+      <h3>📊 Promotion Effect: Before / During / After</h3>
+      <p class="sub">Revenue in same-length windows before, during and after each promotional period. Taller "During" = strong uplift.</p>
+      <canvas id="cPromoEffect" class="ch-h-200"></canvas>
+    </div>
+  </div>
+
+  <!-- Promo vs Non-promo + Manager state revenue -->
+  <div class="cg2">
+    <div class="an-card">
+      <h3>🎁 Promo vs Non-Promo Revenue</h3>
+      <p class="sub">Revenue from promoted vs non-promoted products.</p>
+      <canvas id="cPromoVsNon" class="ch-h-200"></canvas>
+    </div>
+    <div class="an-card">
+      <h3>👥 Revenue by Manager's State</h3>
+      <p class="sub">Total revenue contribution by each manager's assigned state.</p>
+      <canvas id="cMgrRev" class="ch-h-200"></canvas>
+    </div>
+  </div>
+
+</main>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<script src="/static/js/base.js"></script>
+<script src="/static/js/analyst/charts_helper.js"></script>
+<script src="/static/js/analyst/dashboard.js"></script>
+</body>
+</html>

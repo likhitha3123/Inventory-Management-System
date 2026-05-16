@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forgot Password — INVENTORY</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}"/>
+</head>
+
+<body>
+
+<!-- ✅ SIMPLE NAVBAR -->
+<nav class="pub-nav auth-nav" style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;">
+
+  <!-- LEFT: LOGO -->
+  <a href="{{ url_for('common.home') }}" class="nav-brand" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+    <div class="logo-box">📦</div>
+    <span class="brand-name">INVENTORY</span>
+  </a>
+
+  <!-- RIGHT: BACK BUTTON -->
+  <a href="{{ url_for('auth.login') }}" 
+     style="text-decoration:none;font-size:14px;color:#0284c7;font-weight:500;">
+     ← Back to Sign In
+  </a>
+
+</nav>
+
+<!-- ✅ FORM -->
+<div class="auth-card" style="margin-top:80px;">
+
+  <h2 class="auth-title">Reset Password 🔐</h2>
+  <p class="auth-subtitle">Enter your email and we'll send a temporary password</p>
+
+  <div id="msgBox" class="alert" style="display:none;"></div>
+
+  <form id="forgotForm">
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <div class="input-wrap">
+        <span class="input-icon">✉</span>
+        <input type="email" id="email" class="form-control"
+               placeholder="you@company.com" required autocomplete="email"/>
+      </div>
+      <p style="font-size:11px;color:#94a3b8;margin-top:5px;">
+        A temporary password will be sent to this email.
+      </p>
+    </div>
+
+    <button type="submit" class="btn-auth">
+      <div class="spinner" id="spinner"></div>
+      <span id="btnText">Send Reset Link</span>
+    </button>
+  </form>
+
+  <div class="auth-footer" style="margin-top:16px;">
+    Remembered it? 
+    <a href="{{ url_for('auth.login') }}" class="link">Sign in</a>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/forgot.js') }}"></script>
+
+</body>
+</html>

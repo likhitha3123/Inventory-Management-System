@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Products — INVENTORY</title>
+  <link rel="stylesheet" href="/static/css/theme.css" />
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand">
+        <div class="logo-icon">📦</div>INVENTORY
+      </div>
+      <div class="tagline">Management System</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Overview</div><a href="/admin/dashboard" class="nav-link" data-page="dashboard"><span
+          class="nav-icon">🏠</span> Dashboard</a>
+      <div class="nav-section">Inventory</div>
+      <a href="/admin/products" class="nav-link" data-page="products"><span class="nav-icon">📦</span> Products</a>
+      <a href="/admin/inventory" class="nav-link" data-page="inventory"><span class="nav-icon">🗃️</span> Inventory</a>
+      <a href="/admin/sites" class="nav-link" data-page="sites"><span class="nav-icon">🏪</span> Sites</a>
+      <a href="/admin/purchase-orders" class="nav-link" data-page="purchase-orders"><span class="nav-icon">🛒</span>
+        Purchase Orders</a>
+      <a href="/admin/suppliers" class="nav-link" data-page="suppliers"><span class="nav-icon">🏭</span> Suppliers</a>
+      <div class="nav-section">Orders &amp; Logistics</div>
+      <a href="/admin/sales-orders" class="nav-link" data-page="sales-orders"><span class="nav-icon">🧾</span> Sales
+        Orders</a>
+      <a href="/admin/sales" class="nav-link" data-page="sales"><span class="nav-icon">📈</span> Sales</a>
+      <a href="/admin/logistics" class="nav-link" data-page="logistics"><span class="nav-icon">🚚</span> Logistics</a>
+      <a href="/admin/promotions" class="nav-link" data-page="promotions"><span class="nav-icon">🎁</span>
+        Promotions</a>
+      <a href="/admin/customers" class="nav-link" data-page="customers"><span class="nav-icon">👤</span> Customers</a>
+      <div class="nav-section">Administration</div>
+      <a href="/admin/users" class="nav-link   "><span class="nav-icon">👥</span> Users</a>
+      <a href="/admin/audit-log" class="nav-link" data-page="audit-log"><span class="nav-icon">📋</span> Audit Log</a>
+      <a href="/admin/messages" class="nav-link" data-page="messages"><span class="nav-icon">✉️</span> Messages <span
+          class="nav-badge" id="msgBadge"
+          style="display:none;background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:10px;"></span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar">A</div>
+        <div>
+          <div class="user-name">Admin</div>
+          <div class="user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <header class="topnav">
+    <div class="topnav-left"><button class="sidebar-toggle" id="sidebarToggle"
+        aria-label="Toggle menu">&#9776;</button><span class="topnav-heading">INVENTORY</span><span
+        class="topnav-sep">/</span><span class="topnav-page">Products</span></div>
+    <div class="topnav-right">
+      <div style="position:relative;"><button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()"
+          title="Messages"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" style="vertical-align:-2px;">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 01-3.46 0" />
+          </svg><span class="notif-dot" id="notifDot" style="display:none;"></span></button>
+        <div class="notif-panel" id="notifPanel"
+          style="display:none;position:absolute;right:0;top:48px;width:300px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.15);border:1px solid #e2e8f0;z-index:999;">
+          <div
+            style="padding:12px 16px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
+            <strong style="font-size:13px;color:#1e293b;">Messages</strong><a href="/admin/messages"
+              style="font-size:11px;color:#0284c7;text-decoration:none;">View All</a></div>
+          <div id="notifList" style="max-height:260px;overflow-y:auto;"></div>
+          <div style="padding:8px 16px;border-top:1px solid #f1f5f9;text-align:center;"><a href="/admin/messages"
+              style="font-size:12px;color:#0284c7;text-decoration:none;font-weight:500;">Go to Messages →</a></div>
+        </div>
+      </div><a href="/logout" class="btn-logout"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.2" style="vertical-align:-2px;">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg> Logout</a>
+    </div>
+  </header>
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Products</h1>
+        <p class="page-subtitle" id="subtitle">Loading…</p>
+      </div>
+      <div class="page-actions">
+        <!-- <select id="fCategory" class="form-control" style="width:160px;" onchange="load(1)"><option value="">All Categories</option></select> -->
+        <button class="btn btn-primary" onclick="openModal('createModal')">+ New Product</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="table-toolbar">
+        <div class="filters">
+          <select id="fCategory" class="form-control" style="width:160px;" onchange="load(1)">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+        <div class="search-bar">
+          <span class="search-label">Search:</span>
+          <input type="text" id="search" class="form-control" placeholder="Search product, category, supplier…" />
+          <button class="btn btn-primary btn-search" onclick="doSearch()">🔍 Search</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="prodTable">
+          <thead>
+            <tr></tr>
+          </thead>
+          <tbody id="tbody">
+            <tr>
+              <td colspan="9" style="text-align:center;padding:30px;color:#94a3b8;">Loading…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="pgn"></div>
+    </div>
+  </main>
+
+  <!-- CREATE PRODUCT -->
+  <div class="modal-overlay" id="createModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Product</h3><button class="modal-close"
+          onclick="closeModal('createModal')">✕</button>
+      </div>
+      <div id="cAlert" class="alert" style="display:none;"></div>
+      <form id="createForm">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Product Name <span
+                class="required-star">*</span></label><input type="text" id="cpName" class="form-control" required />
+          </div>
+          <!-- <div class="form-group"><label class="form-label">Supplier</label><input type="text" id="cpSupp"
+              class="form-control" /></div> -->
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Category <span class="required-star">*</span></label>
+            <div style="display:flex; gap:6px;">
+              <select id="cpCat" class="form-control"></select>
+              <button type="button" onclick="quickAddCategory()">+</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subcategory <span class="required-star">*</span></label>
+            <div style="display:flex; gap:6px;">
+              <select id="cpSub" class="form-control"></select>
+              <button type="button" onclick="quickAddSubcategory()">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Unit Cost (₹) <span
+                class="required-star">*</span></label><input type="number" id="cpCost" class="form-control" step="0.01"
+              min="0" /></div>
+          <div class="form-group"><label class="form-label">Unit Price (₹) <span
+                class="required-star">*</span></label><input type="number" id="cpPrice" class="form-control" step="0.01"
+              min="0" /></div>
+        </div>
+        <div class="form-group"><label class="form-label">Shelf Life (days) <span class="required-star">*</span></label>
+          <select id="cpShelf" class="form-control">
+            <option value="7">1–7 days (Very Short)</option>
+            <option value="14" selected>8–14 days (Short)</option>
+            <option value="30">15–30 days (Medium)</option>
+            <option value="90">31–90 days (Long)</option>
+            <option value="180">91–180 days (Extended)</option>
+            <option value="365">181–365 days (Very Long)</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('createModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="cBtn">Create Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT PRODUCT -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Product</h3><button class="modal-close"
+          onclick="closeModal('editModal')">✕</button>
+      </div>
+      <div id="eAlert" class="alert" style="display:none;"></div>
+      <form id="editForm">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Product Name <span
+                class="required-star">*</span></label><input type="text" id="eName" class="form-control" required />
+          </div>
+          <!-- <div class="form-group"><label class="form-label">Supplier</label><input type="text" id="eSupp"
+              class="form-control" /></div> -->
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Category <span class="required-star">*</span></label><select
+              id="eCat" class="form-control"></select></div>
+          <div class="form-group"><label class="form-label">Subcategory <span
+                class="required-star">*</span></label><select id="eSub" class="form-control"></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Unit Cost (₹) <span
+                class="required-star">*</span></label><input type="number" id="eCost" class="form-control"
+              step="0.01" /></div>
+          <div class="form-group"><label class="form-label">Unit Price (₹) <span
+                class="required-star">*</span></label><input type="number" id="ePrice" class="form-control"
+              step="0.01" /></div>
+        </div>
+        <div class="form-group"><label class="form-label">Shelf Life (days) <span class="required-star">*</span></label>
+          <select id="eShelf" class="form-control">
+            <option value="7">1–7 days</option>
+            <option value="14">8–14 days</option>
+            <option value="30">15–30 days</option>
+            <option value="90">31–90 days</option>
+            <option value="180">91–180 days</option>
+            <option value="365">181–365 days</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('editModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="eBtn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <style>
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 200;
+      padding: 40px 20px;
+      overflow-y: auto
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px;
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .2)
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f1f5f9
+    }
+
+    .modal-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1e293b
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: #f1f5f9;
+      cursor: pointer;
+      font-size: 14px
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+  </style>
+  <script src="/static/js/base.js"></script>
+  <script src="/static/js/admin/products.js"></script>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+</body>
+
+</html>

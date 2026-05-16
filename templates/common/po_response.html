@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Purchase Order Response — INVENTORY</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}"/>
+  <style>
+    .response-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(140deg, #0c4a6e 0%, #075985 50%, #0891b2 100%);
+      padding: 40px 20px;
+    }
+    .response-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+    }
+    .response-icon {
+      font-size: 56px;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .response-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .response-po {
+      display: inline-block;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0284c7;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+    }
+    .response-msg {
+      font-size: 15px;
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .response-note {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .status-accepted .response-title { color: #15803d; }
+    .status-rejected .response-title { color: #dc2626; }
+    .status-error    .response-title { color: #d97706; }
+    .status-already_done .response-title { color: #64748b; }
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .brand-logo {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+      border-radius: 9px;
+      display: grid; place-items: center;
+      font-size: 18px;
+    }
+    .brand-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px; font-weight: 800;
+      color: #075985;
+    }
+  </style>
+</head>
+<body>
+<div class="response-wrap">
+  <div class="response-card status-{{ status }}">
+    <div class="brand-row">
+      <div class="brand-logo">📦</div>
+      <span class="brand-name">INVENTORY</span>
+    </div>
+
+    {% if status == 'accepted' %}
+      <span class="response-icon">✅</span>
+      <div class="response-title">Order Accepted</div>
+    {% elif status == 'rejected' %}
+      <span class="response-icon">❌</span>
+      <div class="response-title">Order Rejected</div>
+    {% elif status == 'already_done' %}
+      <span class="response-icon">ℹ️</span>
+      <div class="response-title">Already Processed</div>
+    {% else %}
+      <span class="response-icon">⚠️</span>
+      <div class="response-title">Error</div>
+    {% endif %}
+
+    <div class="response-po">{{ po_number }}</div>
+    <p class="response-msg">{{ message }}</p>
+    <p class="response-note">You may close this window. Thank you.</p>
+  </div>
+</div>
+</body>
+</html>

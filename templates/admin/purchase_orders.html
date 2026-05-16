@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Purchase Orders — INVENTORY</title>
+  <link rel="stylesheet" href="/static/css/theme.css" />
+  <style>
+    .po-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .po-draft {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .po-sent {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .po-received {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .po-cancelled {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .filter-bar select,
+    .filter-bar input {
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    /* ── Invoice download button ──────────────────────── */
+    .btn-invoice {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ea580c, #c2410c);
+      color: #fff;
+      border: none;
+      transition: all .18s;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .btn-invoice:hover {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(234, 88, 12, .35);
+    }
+
+    .btn-invoice svg {
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="brand">
+        <div class="logo-icon">📦</div>INVENTORY
+      </div>
+      <div class="tagline">Management System</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Overview</div><a href="/admin/dashboard" class="nav-link" data-page="dashboard"><span
+          class="nav-icon">🏠</span> Dashboard</a>
+      <div class="nav-section">Inventory</div>
+      <a href="/admin/products" class="nav-link" data-page="products"><span class="nav-icon">📦</span> Products</a>
+      <a href="/admin/inventory" class="nav-link" data-page="inventory"><span class="nav-icon">🗃️</span> Inventory</a>
+      <a href="/admin/sites" class="nav-link" data-page="sites"><span class="nav-icon">🏪</span> Sites</a>
+      <a href="/admin/purchase-orders" class="nav-link" data-page="purchase-orders"><span class="nav-icon">🛒</span>
+        Purchase Orders</a>
+      <a href="/admin/suppliers" class="nav-link" data-page="suppliers"><span class="nav-icon">🏭</span> Suppliers</a>
+      <div class="nav-section">Orders &amp; Logistics</div>
+      <a href="/admin/sales-orders" class="nav-link" data-page="sales-orders"><span class="nav-icon">🧾</span> Sales
+        Orders</a>
+      <a href="/admin/sales" class="nav-link" data-page="sales"><span class="nav-icon">📈</span> Sales</a>
+      <a href="/admin/logistics" class="nav-link" data-page="logistics"><span class="nav-icon">🚚</span> Logistics</a>
+      <a href="/admin/promotions" class="nav-link" data-page="promotions"><span class="nav-icon">🎁</span>
+        Promotions</a>
+      <a href="/admin/customers" class="nav-link" data-page="customers"><span class="nav-icon">👤</span> Customers</a>
+      <div class="nav-section">Administration</div>
+      <a href="/admin/users" class="nav-link   "><span class="nav-icon">👥</span> Users</a>
+      <a href="/admin/audit-log" class="nav-link" data-page="audit-log"><span class="nav-icon">📋</span> Audit Log</a>
+      <a href="/admin/messages" class="nav-link" data-page="messages"><span class="nav-icon">✉️</span> Messages <span
+          class="nav-badge" id="msgBadge"
+          style="display:none;background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:10px;"></span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar">A</div>
+        <div>
+          <div class="user-name">Admin</div>
+          <div class="user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <header class="topnav">
+    <div class="topnav-left"><button class="sidebar-toggle" id="sidebarToggle">&#9776;</button><span
+        class="topnav-heading">INVENTORY</span><span class="topnav-sep">/</span><span class="topnav-page">Purchase
+        Orders</span></div>
+    <div class="topnav-right"><a href="/logout" class="btn-logout"><svg width="15" height="15" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.2" style="vertical-align:-2px;">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg> Logout</a></div>
+  </header>
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Purchase Orders</h1>
+        <p class="page-subtitle" id="subtitle">Loading…</p>
+      </div>
+      <div class="page-actions"><button class="btn btn-primary" onclick="openModal('createModal')">+ New PO</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid g4 mb24">
+      <div class="stat-card">
+        <div class="stat-icon si-sky"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
+          </svg></div>
+        <div>
+          <div class="stat-label">Total POs</div>
+          <div class="stat-value" id="sTotal">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-teal">📤</div>
+        <div>
+          <div class="stat-label">Sent</div>
+          <div class="stat-value" id="sSent">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-green"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12" />
+          </svg></div>
+        <div>
+          <div class="stat-label">Received</div>
+          <div class="stat-value" id="sReceived">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon si-red"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></div>
+        <div>
+          <div class="stat-label">Cancelled</div>
+          <div class="stat-value" id="sCancelled">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-toolbar">
+        <div class="filters">
+          <select class="form-control" style="width:160px;" id="fStatus" onchange="load(1)">
+            <option value="">All Statuses</option>
+            <option value="draft">Draft</option>
+            <option value="sent">Sent</option>
+            <option value="received">Received</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="search-bar"><button class="btn btn-primary btn-search" style="min-width:100px; text-align: center;"
+            onclick="openReturnModal('purchase','/admin')">Return</button></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Supplier</th>
+              <th>Site</th>
+              <th>Product</th>
+              <th>Status</th>
+              <th>View</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr>
+              <td colspan="10" style="text-align:center;padding:30px;color:#94a3b8;">Loading…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="pgn"></div>
+    </div>
+  </main>
+
+  <!-- CREATE PO MODAL -->
+  <div class="modal-overlay" id="createModal">
+    <div class="modal" style="max-width:600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">New Purchase Order</h3><button class="modal-close"
+          onclick="closeModal('createModal')">✕</button>
+      </div>
+      <div id="cAlert" class="alert" style="display:none;"></div>
+      <form id="createForm">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Supplier<span class="required-star"><span
+                  class="required-star">*</span></span></label>
+            <select id="cpSupplier" class="form-control" required>
+              <option value="">— Select Supplier —</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Site<span class="required-star"><span
+                  class="required-star">*</span></span></label>
+            <select id="cpSite" class="form-control" required>
+              <option value="">— Select Site —</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Product<span class="required-star"><span
+                  class="required-star">*</span></span></label>
+            <select id="cpProduct" class="form-control" required>
+              <option value="">— Select Product —</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Quantity<span class="required-star"><span
+                  class="required-star">*</span></span></label>
+            <input type="number" id="cpQty" class="form-control" min="1" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Order Date</label>
+            <input type="datetime-local" id="cpOrderDate" class="form-control" readonly />
+          </div>
+          <div class="form-group"><label class="form-label">Expected Delivery<span class="required-star"><span
+                  class="required-star">*</span></span></label>
+            <input type="date" id="cpExpDel" class="form-control" required />
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('createModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="cBtn">Place Order &amp; Notify Supplier</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/static/js/base.js"></script>
+  <script>
+    var allPOs = [], suppliers = [], sites = [], products = [];
+
+    async function init() {
+      // set current datetime
+      var now = new Date();
+      var local = now.toISOString().slice(0, 16);
+      document.getElementById('cpOrderDate').value = local;
+
+      var [supRes, siteRes, prodRes] = await Promise.all([
+        fetch('/admin/api/suppliers'),
+        fetch('/admin/api/sites?dropdown=1'),
+        fetch('/admin/api/products?dropdown=1&type=inventory')
+      ]);
+      suppliers = (await supRes.json()).items || [];
+      sites = (await siteRes.json()).items || [];
+      products = (await prodRes.json()).items || [];
+
+      var supOpts = suppliers.map(s => `<option value="${s.id}">${s.supplier_pk} — ${s.supplier_name}</option>`).join('');
+      document.getElementById('cpSupplier').innerHTML = '<option value="">— Select Supplier —</option>' + supOpts;
+
+      var siteOpts = sites.map(s => `<option value="${s.site_id}">${s.site_id} — ${s.site_name}</option>`).join('');
+      document.getElementById('cpSite').innerHTML = '<option value="">— Select Site —</option>' + siteOpts;
+
+      var prodOpts = products.map(p => `<option value="${p.product_id}">${p.product_id} — ${p.product_name}</option>`).join('');
+      document.getElementById('cpProduct').innerHTML = '<option value="">— Select Product —</option>' + prodOpts;
+
+      await load(1);
+      loadNotifications();
+    }
+
+    async function load(page) {
+      var status = document.getElementById('fStatus').value;
+      var url = '/admin/api/purchase-orders?page=' + page + (status ? '&status=' + status : '');
+      var d = await fetch(url).then(r => r.json());
+      allPOs = d.items;
+      document.getElementById('subtitle').textContent = fmt(d.total) + ' purchase orders total.';
+      // stats
+      var all = await fetch('/admin/api/purchase-orders?page=1&per_page=1000').then(r => r.json());
+      document.getElementById('sTotal').textContent = d.total;
+      const norm = s => (s || '').toLowerCase().trim();
+      document.getElementById('sSent').textContent = (all.items || []).filter(p => p.status === 'sent').length;
+      document.getElementById('sReceived').textContent = (all.items || []).filter(p => p.status === 'received').length;
+      document.getElementById('sCancelled').textContent = (all.items || []).filter(p => p.status === 'cancelled').length;
+      renderRows(d.items);
+      document.getElementById('pgn').innerHTML = buildPagination(d, load);
+    }
+
+    function statusBadgePO(s) {
+      var map = { draft: 'po-draft', sent: 'po-sent', received: 'po-received', cancelled: 'po-cancelled' };
+      return `<span class="po-badge ${map[s] || 'po-draft'}">${s}</span>`;
+    }
+
+    var _poCache = [];
+    function renderRows(items) {
+      _poCache = items;
+      if (!items.length) {
+        document.getElementById('tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#94a3b8;">No purchase orders found.</td></tr>';
+        return;
+      }
+      document.getElementById('tbody').innerHTML = items.map((po, idx) => `
+    <tr>
+      <td><strong>${po.supplier_name}</strong></td>
+      <td>${badge(po.site_id, 'sky')}</td>
+      <td style="font-size:12px;">${po.product_id}</td>
+      <td>${statusBadgePO(po.status)}</td>
+      <td class="action-btns">
+        <button class="btn btn-icon btn-icon-view" title="View All Details" onclick="viewPODetail(${idx})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button></td><td>
+        ${po.status === 'sent' ? `<button class="btn btn-icon btn-icon-approve" title="Mark Received" onclick="markReceived(${po.id})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button>` : ''}
+        ${po.status !== 'received' && po.status !== 'cancelled' ? `<button class="btn btn-icon btn-icon-delete" title="Cancel PO" onclick="cancelPO(${po.id})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>` : ''}
+        ${po.status === 'received' ? `<span class="badge badge-success" style="font-size:11px;">✓ Received</span>` : ''}
+      </td>
+    </tr>`).join('');
+    }
+
+    function viewPODetail(idx) {
+      var po = _poCache[idx];
+      if (!po) return;
+      showDetailModal('Purchase Order Details', `
+    <div class="detail-grid">
+      <div class="dg-row"><span class="dg-label">PO Number</span><span class="dg-val"><strong style="color:#0284c7;">${po.po_number || '—'}</strong></span></div>
+      <div class="dg-row"><span class="dg-label">Supplier</span><span class="dg-val">${po.supplier_name}</span></div>
+      <div class="dg-row"><span class="dg-label">Site</span><span class="dg-val">${badge(po.site_id, 'sky')}</span></div>
+      <div class="dg-row"><span class="dg-label">Product</span><span class="dg-val">${po.product_id}<br><span style="font-size:11px;color:#64748b;">${po.product_name || ''}</span></span></div>
+      <div class="dg-row"><span class="dg-label">Quantity</span><span class="dg-val"><strong>${fmt(po.quantity)}</strong></span></div>
+      <div class="dg-row"><span class="dg-label">Order Date</span><span class="dg-val">${(po.order_date || '').slice(0, 10) || '—'}</span></div>
+      <div class="dg-row"><span class="dg-label">Exp. Delivery</span><span class="dg-val">${po.expected_delivery || '—'}</span></div>
+      <div class="dg-row"><span class="dg-label">Placed By</span><span class="dg-val">${po.placed_by} <span style="font-size:11px;color:#94a3b8;">(${po.placed_by_role})</span></span></div>
+      <div class="dg-row"><span class="dg-label">Status</span><span class="dg-val">${statusBadgePO(po.status)}</span></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
+      <button class="btn btn-outline" onclick="closeDetailModal()">Close</button>
+      ${po.status === 'received' ? `<button class="btn" style="background:#fff7ed;border:1.5px solid #fed7aa;color:#ea580c;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;" onclick="closeDetailModal();openReturnModal('purchase','/admin')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> Return</button>` : ''}
+      <button class="btn-invoice" onclick="downloadPOInvoice(${po.id})">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Invoice
+      </button>
+      ${po.status === 'sent' ? `<button class="btn btn-success" onclick="closeDetailModal();markReceived(${po.id})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Mark Received</button>` : ''}
+      ${po.status !== 'received' && po.status !== 'cancelled' ? `<button class="btn btn-danger" onclick="closeDetailModal();cancelPO(${po.id})">Cancel PO</button>` : ''}
+    </div>
+  `);
+    }
+
+    async function markReceived(id) {
+      if (!confirm('Mark this PO as Received? This will update inventory.')) return;
+      var res = await fetch('/admin/api/purchase-orders/' + id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'received' }) });
+      var d = await res.json();
+      if (d.ok) {
+        // Also trigger inventory update via PO respond endpoint
+        var po = allPOs.find(p => p.id === id);
+        if (po) await fetch('/admin/po/respond/' + po.po_number + '/accept');
+        load(1);
+      }
+    }
+
+    async function cancelPO(id) {
+      if (!confirm('Cancel this Purchase Order?')) return;
+      var res = await fetch('/admin/api/purchase-orders/' + id, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'cancelled' }) });
+      if ((await res.json()).ok) load(1);
+    }
+
+    document.getElementById('createForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var btn = document.getElementById('cBtn');
+      btn.disabled = true; btn.textContent = 'Placing…';
+      var body = {
+        supplier_id: document.getElementById('cpSupplier').value,
+        site_id: document.getElementById('cpSite').value,
+        product_id: document.getElementById('cpProduct').value,
+        quantity: document.getElementById('cpQty').value,
+        expected_delivery: document.getElementById('cpExpDel').value
+      };
+      var res = await fetch('/admin/api/purchase-orders', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      var d = await res.json();
+      btn.disabled = false; btn.textContent = 'Place Order & Notify Supplier';
+      if (d.ok) {
+        closeModal('createModal');
+        showAlert('cAlert', 'PO ' + d.po_number + ' created and supplier notified!', 'success');
+        load(1);
+      } else {
+        showAlert('cAlert', d.error || 'Error', 'danger');
+      }
+    });
+
+    function showAlert(id, msg, type) {
+      var el = document.getElementById(id);
+      if (el) { el.style.display = 'block'; el.className = 'alert alert-' + type; el.textContent = msg; setTimeout(() => el.style.display = 'none', 4000); }
+    }
+
+    function loadNotifications() {
+      fetch('/admin/api/notifications').then(r => r.json()).then(d => {
+        var badge = document.getElementById('msgBadge');
+        if (badge && d.pending_count > 0) { badge.style.display = 'inline'; badge.textContent = d.pending_count; }
+      }).catch(() => { });
+    }
+
+    window.onload = init;
+
+    function downloadPOInvoice(id) {
+      showToast('Generating invoice PDF…', 'success');
+      var a = document.createElement('a');
+      a.href = '/admin/api/invoices/purchase-order/' + id;
+      a.download = '';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
+  <script src="/static/js/return_modal.js"></script>
+</body>
+
+</html>

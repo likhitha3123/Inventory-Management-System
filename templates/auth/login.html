@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — INVENTORY</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+
+</head>
+
+<body>
+
+  <nav class="pub-nav">
+  <a href="#" class="nav-brand">
+    <div class="logo-box">📦</div>
+    <span class="brand-name">INVENTORY</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="{{ url_for('common.home') }}">Home</a></li>
+    <li><a href="{{ url_for('common.about') }}">About</a></li>
+    <li><a href="{{ url_for('common.features') }}">Features</a></li>
+    <li><a href="{{ url_for('common.contact') }}">Contact</a></li>
+  </ul>
+
+  <button class="nav-toggle" id="navToggle">☰</button>
+
+  <div class="nav-cta">
+    <a href="#" class="btn-get-started">Get Started →</a>
+  </div>
+</nav>
+<div class="auth-container">
+  <div class="auth-card">
+    <h2 class="auth-title">Welcome back </h2>
+    <p class="auth-subtitle">Sign in to your inventory dashboard</p>
+
+    <div id="errBox" class="alert alert-error" style="display:none;"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="input-wrap">
+          <span class="input-icon">✉</span>
+          <input type="email" id="email" class="form-control" placeholder="admin@inventory.com" required
+            autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password <span class="required-star">*</span></label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="password" class="form-control" placeholder="Enter your password" required
+            autocomplete="current-password" />
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="remember">
+          <input type="checkbox" /> Remember me
+        </label>
+        <a href="{{ url_for('auth.forgot_password') }}" class="link">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn-auth">
+        <div class="spinner" id="spinner"></div>
+        <span id="btnText">Sign In</span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <a href="{{ url_for('common.home') }}" class="link">← Back to home</a>
+    </div>
+  </div></div>
+
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+
+</html>

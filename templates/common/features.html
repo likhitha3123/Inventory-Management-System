@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Features — INVENTORY</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}"/>
+</head>
+<body>
+
+<nav class="pub-nav">
+  <a href="{{ url_for('common.home') }}" class="nav-brand">
+    <div class="logo-box">📦</div>
+    <span class="brand-name">INVENTORY</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('common.home') }}">Home</a></li>
+    <li><a href="{{ url_for('common.about') }}">About</a></li>
+    <li><a href="{{ url_for('common.features') }}" class="active">Features</a></li>
+    <li><a href="{{ url_for('common.contact') }}">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+  <div class="nav-cta">
+    <a href="{{ url_for('auth.login') }}" class="btn-get-started">Get Started →</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="hero-badge" style="justify-content:center;margin-bottom:18px;">⚡ Platform Features</div>
+    <h1 class="hero-title" style="margin-bottom:16px;">Every tool your <span>inventory</span> needs</h1>
+    <p class="hero-desc" style="margin:0 auto;text-align:center;">From real-time stock visibility to predictive ordering — all the features built to keep your business running.</p>
+  </div>
+</div>
+
+<!-- FEATURE DEEP-DIVES -->
+<section style="background:#fff;">
+  <div style="max-width:1060px;margin:0 auto;">
+    <div class="about-grid" style="margin-bottom:72px;">
+      <div>
+        <div class="section-tag">📦 Stock Management</div>
+        <h2 class="section-title">Complete stock visibility at a glance</h2>
+        <p style="font-size:14px;color:#64748b;line-height:1.75;margin-bottom:16px;">Track every SKU across all locations in real-time. Set minimum stock levels, view stock valuation, and get instant alerts when items need reordering.</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:9px;font-size:13px;color:#334155;"><span style="color:#0284c7;font-weight:700;">✓</span>Real-time stock level monitoring</li>
+          <li style="display:flex;gap:9px;font-size:13px;color:#334155;"><span style="color:#0284c7;font-weight:700;">✓</span>Multi-location site support</li>
+          <li style="display:flex;gap:9px;font-size:13px;color:#334155;"><span style="color:#0284c7;font-weight:700;">✓</span>Stockout flag tracking</li>
+          <li style="display:flex;gap:9px;font-size:13px;color:#334155;"><span style="color:#0284c7;font-weight:700;">✓</span>Replenishment quantity alerts</li>
+        </ul>
+      </div>
+    <div class="img-ph" style="width: 100%;"><img src="{{ url_for('static', filename='images/Stock_tacking.jpg') }}" style="height:100%;width: 100%; border-radius: 8px;"></div>
+    </div>
+
+    <div class="about-grid" style="margin-bottom:72px;">
+    <div class="img-ph" style="width: 100%;"><img src="{{ url_for('static', filename='images/tracking_shipment.png') }}" style="height:100%;width: 100%; border-radius: 8px;"></div>
+      <div>
+        <div class="section-tag">🚚 Logistics Tracking</div>
+        <h2 class="section-title">Track every shipment end-to-end</h2>
+        <p style="font-size:14px;color:#64748b;line-height:1.75;margin-bottom:16px;">Track every outgoing and incoming shipment with transport type, delivery status, and full site-to-site visibility.</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:9px;font-size:13px;color:#334155;"><span style="color:#0284c7;font-weight:700;">✓</span>Shipment status: Delivered, In-Transit, Cancelled</li>
+          <li style="display:flex;gap:9px;font-size:13px;color:#334155;"><span style="color:#0284c7;font-weight:700;">✓</span>Transportation type tracking (Rail, Road, Air)</li>
+          <li style="display:flex;gap:9px;font-size:13px;color:#334155;"><span style="color:#0284c7;font-weight:700;">✓</span>Quantity and date records</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="about-grid">
+      <div>
+        <div class="section-tag">📈 Analytics & Planning</div>
+        <h2 class="section-title">Data-driven decisions for your inventory</h2>
+        <p style="font-size:14px;color:#64748b;line-height:1.75;margin-bottom:16px;">Monthly and seasonal planning tools, sales trend analysis, and forecasting to keep your inventory optimised year-round.</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:9px;font-size:13px;color:#334155;"><span style="color:#0284c7;font-weight:700;">✓</span>Monthly vs forecasted sales comparison</li>
+          <li style="display:flex;gap:9px;font-size:13px;color:#334155;"><span style="color:#0284c7;font-weight:700;">✓</span>Seasonal adjustment tracking</li>
+          <li style="display:flex;gap:9px;font-size:13px;color:#334155;"><span style="color:#0284c7;font-weight:700;">✓</span>Category-level performance breakdowns</li>
+        </ul>
+      </div>
+    <div class="img-ph" style="width: 100%;"><img src="{{ url_for('static', filename='images/data driven.jpg') }}" style="height:100%;width: 100%; border-radius: 8px;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ALL FEATURES GRID -->
+<section class="features-bg">
+  <div style="max-width:1060px;margin:0 auto;">
+    <div class="section-center">
+      <div class="section-tag">✨ All Features</div>
+      <h2 class="section-title">Everything included</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card"><div class="feature-icon" style="background:#e0f2fe;color:#0284c7;">🔄</div><h3 class="feature-title">Inventory Sync</h3><p class="feature-desc">Auto-sync stock levels when sales, returns, or replenishments are recorded.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:#ecfdf5;color:#059669;">🔐</div><h3 class="feature-title">Role-based Access</h3><p class="feature-desc">Admin and Manager roles with state-level allocation for granular access control.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:#fef3c7;color:#d97706;">👥</div><h3 class="feature-title">Customer Insights</h3><p class="feature-desc">Customer demographics, purchase frequency, and average spend analysis.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:#fce7f3;color:#be185d;">🏪</div><h3 class="feature-title">Site Management</h3><p class="feature-desc">Manage multiple store formats across regions, cities, and states.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:#ede9fe;color:#7c3aed;">💰</div><h3 class="feature-title">Revenue Tracking</h3><p class="feature-desc">Monitor revenue, discounts, and returns across all sales transactions.</p></div>
+      <div class="feature-card"><div class="feature-icon" style="background:#fee2e2;color:#dc2626;">🎯</div><h3 class="feature-title">Promotions</h3><p class="feature-desc">Create targeted discounts — percentage or flat — with start and end date control.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-banner">
+  <h2>Ready to experience all this?</h2>
+  <p>Sign in and start managing your inventory smarter today.</p>
+  <a href="{{ url_for('auth.login') }}" class="btn-hero-white" style="display:inline-flex;">🚀 Get Started</a>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-brand">📦 INVENTORY</div><p class="footer-desc">The complete inventory management platform for modern businesses.</p></div>
+    <div class="footer-col"><div class="footer-col-title">Product</div><a href="{{ url_for('common.features') }}">Features</a></div>
+    <div class="footer-col"><div class="footer-col-title">Company</div><a href="{{ url_for('common.about') }}">About</a><a href="{{ url_for('common.contact') }}">Contact</a></div>
+    <div class="footer-col"><div class="footer-col-title">Support</div><a href="#">Help</a></div>
+  </div>
+  <div class="footer-bottom">© 2025 INVENTORY Management System. All rights reserved.</div>
+</footer>
+
+<script>
+(function(){
+  var btn = document.getElementById("navToggle");
+  var links = document.querySelector(".nav-links");
+  if (!btn || !links) return;
+  btn.addEventListener("click", function(){
+    links.classList.toggle("open");
+    btn.innerHTML = links.classList.contains("open") ? "&#10005;" : "&#9776;";
+  });
+  links.querySelectorAll("a").forEach(function(a){
+    a.addEventListener("click", function(){
+      links.classList.remove("open");
+      btn.innerHTML = "&#9776;";
+    });
+  });
+})();
+</script>
+</body>
+</html>

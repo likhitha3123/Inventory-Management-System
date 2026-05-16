@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INVENTORY — Smart Inventory Management</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}"/>
+  <style>
+    /* ── animated counter ── */
+    .count-num { font-family:'Outfit',sans-serif; font-size:clamp(28px,3vw,42px); font-weight:800; color:#fff; }
+    /* ── section image ── */
+    .real-img { width:100%; height:100%; object-fit:cover; border-radius:18px; box-shadow:0 12px 40px rgba(0,0,0,.18); }
+    /* ── feature icon box ── */
+    .feat-icon-box { width:56px; height:56px; border-radius:16px; display:grid; place-items:center; font-size:24px; margin-bottom:18px; flex-shrink:0; }
+    /* ── trust logos ── */
+    .trust-strip { background:#f8fafc; padding:36px 6%; border-top:1px solid #e2e8f0; text-align:center; }
+    /* ── process steps ── */
+    .steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; max-width:1100px; margin:0 auto; }
+    .step-card { background:#fff; border-radius:18px; padding:32px 24px; text-align:center; border:1px solid #e2e8f0; position:relative; transition:all .25s; }
+    .step-card:hover { box-shadow:0 8px 28px rgba(14,165,233,.12); transform:translateY(-4px); }
+    .step-num { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#38bdf8,#0284c7); color:#fff; font-family:'Outfit',sans-serif; font-size:20px; font-weight:800; display:grid; place-items:center; margin:0 auto 18px; box-shadow:0 4px 14px rgba(14,165,233,.35); }
+    /* ── testimonial ── */
+    .testimonial-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; max-width:1100px; margin:0 auto; }
+    .test-card { background:#fff; border-radius:16px; padding:26px; border:1px solid #e2e8f0; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+    .test-stars { color:#f59e0b; font-size:14px; margin-bottom:12px; }
+    .test-text { font-size:14px; color:#475569; line-height:1.7; margin-bottom:16px; font-style:italic; }
+    .test-author { display:flex; align-items:center; gap:10px; }
+    .test-avatar { width:38px; height:38px; border-radius:50%; display:grid; place-items:center; font-size:18px; }
+    .test-name { font-size:13px; font-weight:700; color:#1e293b; }
+    .test-role { font-size:11px; color:#94a3b8; }
+    /* ── hero image side ── */
+    .hero-img-wrap { position:relative; }
+    .hero-img-wrap img { width:100%; border-radius:20px; box-shadow:0 24px 64px rgba(0,0,0,.28); }
+    .hero-img-badge { position:absolute; bottom:-14px; left:-14px; background:#fff; border-radius:14px; padding:12px 18px; display:flex; align-items:center; gap:10px; box-shadow:0 8px 24px rgba(0,0,0,.14); }
+    .hero-img-badge2 { position:absolute; top:-14px; right:-14px; background:linear-gradient(135deg,#0ea5e9,#06b6d4); border-radius:14px; padding:12px 18px; color:#fff; font-size:12px; font-weight:600; box-shadow:0 8px 24px rgba(14,165,233,.35); }
+    @media(max-width:900px){ .steps-grid,.testimonial-grid{ grid-template-columns:1fr; } }
+    @media(max-width:600px){ .steps-grid,.testimonial-grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="pub-nav">
+  <a href="{{ url_for('common.home') }}" class="nav-brand">
+    <div class="logo-box">📦</div>
+    <span class="brand-name">INVENTORY</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('common.home') }}" class="active">Home</a></li>
+    <li><a href="{{ url_for('common.about') }}">About</a></li>
+    <li><a href="{{ url_for('common.features') }}">Features</a></li>
+    <li><a href="{{ url_for('common.contact') }}">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+  <div class="nav-cta">
+    <a href="{{ url_for('auth.login') }}" class="btn-get-started">Get Started →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bubble" style="width:360px;height:360px;top:-100px;right:-80px;"></div>
+  <div class="hero-bubble" style="width:180px;height:180px;bottom:80px;left:4%;"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">✦ #1 Inventory Platform in India</div>
+      <h1 class="hero-title">Smart <span>Inventory</span><br/>Management<br/>Made Simple</h1>
+      <p class="hero-desc">Take full control of your stock, orders, and supply chain. Real-time tracking, intelligent alerts, and actionable insights — all in one place.</p>
+      <div class="hero-actions">
+        <a href="{{ url_for('auth.login') }}" class="btn-hero-white">🚀 Go to Dashboard</a>
+        <a href="{{ url_for('common.features') }}" class="btn-hero-outline">▶ See Features</a>
+      </div>
+      <!-- Animated Stats -->
+       <div class="hero-stats">
+        <div>
+          <div class="count-num" data-target="{{ stats.total_products }}" id="cnt1">0</div>
+          <div class="hero-stat-lbl">Products Tracked</div>
+        </div>
+        <div>
+          <div class="count-num" data-target="{{ stats.total_sites }}" id="cnt2">0</div>
+          <div class="hero-stat-lbl">Store Sites</div>
+        </div>
+        <div>
+          <div class="count-num" data-target="{{ stats.total_revenue }}" id="cnt3" data-prefix="₹" data-suffix="Cr+">0</div>
+          <div class="hero-stat-lbl">Revenue Managed</div>
+        </div>
+        <div>
+          <div class="count-num" data-target="{{ stats.total_sales }}" id="cnt4">0</div>
+          <div class="hero-stat-lbl">Sales Records</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real image -->
+    <div class="hero-img-wrap">
+      <img src="{{ url_for('static', filename='images/smart_inventory.jpg') }}" alt="Inventory Management Dashboard"/>
+      <div class="hero-img-badge">
+        <span style="font-size:22px;">📊</span>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#1e293b;">Real-Time Tracking</div>
+          <div style="font-size:11px;color:#64748b;">Live stock updates</div>
+        </div>
+      </div>
+      <div class="hero-img-badge2">
+        ✅ 99.9% Uptime SLA
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <p style="font-size:11px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;margin-bottom:22px;font-weight:600;">Trusted by businesses across industries</p>
+  <div style="display:flex;justify-content:center;align-items:center;gap:48px;flex-wrap:wrap;opacity:.45;font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;color:#334155;letter-spacing:-0.4px;">
+    <span>RetailCo</span><span>MegaStore</span><span>QuickSupply</span><span>FreshMart</span><span>TechDepot</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-bg">
+  <div style="max-width:1160px;margin:0 auto;">
+    <div class="section-center">
+      <div class="section-tag">⚡ Core Features</div>
+      <h2 class="section-title">Everything you need to run your inventory</h2>
+      <p class="section-desc">From real-time stock tracking to automated reorder alerts — built for businesses of all sizes.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feat-icon-box" style="background:#e0f2fe;color:#0284c7;">📊</div>
+        <h3 class="feature-title">Real-Time Stock Tracking</h3>
+        <p class="feature-desc">Monitor every SKU across all {{ stats.total_sites }} store sites in real-time. Never lose sight of your inventory.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon-box" style="background:#ecfdf5;color:#059669;">🔔</div>
+        <h3 class="feature-title">Smart Stockout Alerts</h3>
+        <p class="feature-desc">Get instant notifications when stock hits reorder levels. Prevent stockouts before they impact sales.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon-box" style="background:#fef3c7;color:#d97706;">📈</div>
+        <h3 class="feature-title">Sales Analytics</h3>
+        <p class="feature-desc">Visualise {{ stats.total_sales }}+ sales records. Discover trends and top-performing products instantly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon-box" style="background:#fce7f3;color:#be185d;">🚚</div>
+        <h3 class="feature-title">Logistics Management</h3>
+        <p class="feature-desc">Track every shipment from dispatch to delivery. Full supply chain visibility at all times.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon-box" style="background:#ede9fe;color:#7c3aed;">📋</div>
+        <h3 class="feature-title">Seasonal Planning</h3>
+        <p class="feature-desc">Monthly and seasonal planning tools to forecast demand and adjust inventory levels proactively.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon-box" style="background:#fee2e2;color:#dc2626;">🎁</div>
+        <h3 class="feature-title">Promotions Manager</h3>
+        <p class="feature-desc">Create and manage product promotions and discounts with start and end date control.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-banner">
+  <h2>Ready to transform your inventory?</h2>
+  <p>Join hundreds of businesses already using INVENTORY to streamline their operations.</p>
+  <a href="{{ url_for('auth.login') }}" class="btn-hero-white" style="display:inline-flex;">🚀 Get Started Free</a>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand">📦 INVENTORY</div>
+      <p class="footer-desc">The complete inventory management platform for modern businesses. Track, manage, and grow smarter.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Product</div>
+      <a href="{{ url_for('common.features') }}">Features</a>
+      <a href="{{ url_for('auth.login') }}">Dashboard</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Company</div>
+      <a href="{{ url_for('common.about') }}">About Us</a>
+      <a href="{{ url_for('common.contact') }}">Contact</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Support</div>
+      <a href="{{ url_for('common.contact') }}">Help</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 INVENTORY Management System. All rights reserved.</div>
+</footer>
+
+<script>
+// Animated counter
+function animateCounter(el) {
+  var target  = parseInt(el.dataset.target) || 0;
+  var prefix  = el.dataset.prefix  || '';
+  var suffix  = el.dataset.suffix  || '';
+  var dur     = 1800;
+  var step    = 16;
+  var steps   = dur / step;
+  var inc     = target / steps;
+  var current = 0;
+
+  var timer = setInterval(function(){
+    current += inc;
+    if(current >= target){
+      current = target;
+      clearInterval(timer);
+    }
+    el.textContent = prefix + Math.floor(current).toLocaleString('en-IN') + suffix;
+  }, step);
+}
+
+// IntersectionObserver to trigger counters when visible
+var observed = new Set();
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting && !observed.has(entry.target)){
+      observed.add(entry.target);
+      animateCounter(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.count-num[data-target]').forEach(function(el){
+  observer.observe(el);
+});
+</script>
+<script>
+(function(){
+  var btn = document.getElementById("navToggle");
+  var links = document.querySelector(".nav-links");
+  if (!btn || !links) return;
+  btn.addEventListener("click", function(){
+    links.classList.toggle("open");
+    btn.innerHTML = links.classList.contains("open") ? "&#10005;" : "&#9776;";
+  });
+  links.querySelectorAll("a").forEach(function(a){
+    a.addEventListener("click", function(){
+      links.classList.remove("open");
+      btn.innerHTML = "&#9776;";
+    });
+  });
+})();
+</script>
+</body>
+</html>
