@@ -1,15 +1,23 @@
-class config:
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:liki3123@localhost:5432/INV'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = "mysecret123"
+import os
 
+class Config:
+    # Database
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Security
+    SECRET_KEY = os.getenv("SECRET_KEY", "change-this-in-production")
+
+    # Uploads
     UPLOAD_FOLDER = 'static/uploads'
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'jfif'}
     LIMIT_PER_PAGE = 20
 
-    MAIL_SERVER   = 'smtp.gmail.com'
-    MAIL_PORT     = 587
-    MAIL_USE_TLS  = True
-    MAIL_USERNAME = 'likhitha03123@gmail.com'
-    MAIL_PASSWORD = 'idll rqsq lbfx hsoj'
-    MAIL_DEFAULT_SENDER = 'likhitha03123@gmail.com'
+    # Mail (Gmail SMTP)
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+    MAIL_DEFAULT_SENDER = os.getenv("MAIL_USERNAME")
