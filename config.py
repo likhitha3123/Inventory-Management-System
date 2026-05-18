@@ -25,7 +25,8 @@ class Config:
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
-
+    MAIL_TIMEOUT = 10
+    
     MAIL_USERNAME = 'apikey'
     MAIL_PASSWORD = os.getenv("SENDGRID_API_KEY")
 
