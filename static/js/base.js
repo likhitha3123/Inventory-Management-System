@@ -330,7 +330,9 @@ async function loadNotifications(){
         }).join('');
       }
     }
-  }catch(e){}
+  }catch(e){
+  console.error('Notification Error:', e);
+}
 }
 
 function toggleNotifPanel(){

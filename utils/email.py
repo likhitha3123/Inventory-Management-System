@@ -17,7 +17,11 @@ Please log in and change your password immediately.
 
 -- INVENTORY Management System
 """
-    mail.send(msg)
+    try:
+        mail.send(msg)
+        print("EMAIL SENT")
+    except Exception as e:
+        print("EMAIL ERROR:", e)
 
 
 def send_po_to_supplier(mail, supplier_email, supplier_name, po):
@@ -47,7 +51,11 @@ REJECT ORDER: {reject_url}
 
 -- INVENTORY Management System
 """
-    mail.send(msg)
+    try:
+        mail.send(msg)
+        print("EMAIL SENT")
+    except Exception as e:
+        print("EMAIL ERROR:", e)
 
 
 def send_po_rejection_to_admin(mail, admin_email, supplier_name, po):
@@ -69,4 +77,8 @@ Please log in and take action.
 
 -- INVENTORY Management System
 """
-    mail.send(msg)
+    try:
+        mail.send(msg)
+        print("EMAIL SENT")
+    except Exception as e:
+        print("EMAIL ERROR:", e)
