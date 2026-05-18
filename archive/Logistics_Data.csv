@@ -1,4 +1,4 @@
-Seament ID,Site ID,Product ID,Seament Date,Quantity,Delivery Status,Transportation Type
+Seament ID,Site ID,Product ID,Shipment Date,Quantity,Delivery Status,Transportation Type
 SHP90000,7EEQ,PRD10038,15-07-2024,76,Cancelled,Rail
 SHP90001,NY20,PRD10050,30-08-2024,92,Delivered,Rail
 SHP90002,0L72,PRD10049,28-05-2024,40,In Transit,Road
