@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
-from config import config
+from config import Config
 from models.db import db
 
 from models.records import (
@@ -12,7 +12,7 @@ from models.purchase_order import PurchaseOrder
 from models.catogery import Category
 from models.sub_catogery import SubCategory
 
-engine = create_engine(config.SQLALCHEMY_DATABASE_URI)
+engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
 
 # -------------------------------
 # HELPERS
