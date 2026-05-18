@@ -26,8 +26,8 @@ Please log in and change your password immediately.
 
 def send_po_to_supplier(mail, supplier_email, supplier_name, po):
     """Send PO notification to supplier with accept/reject links."""
-    accept_url = f"http://localhost:5000/admin/po/respond/{po.po_number}/accept"
-    reject_url = f"http://localhost:5000/admin/po/respond/{po.po_number}/reject"
+    accept_url = f"https://inventory-management-system-eiqz.onrender.com/admin/po/respond/{po.po_number}/accept"
+    reject_url = f"https://inventory-management-system-eiqz.onrender.com/admin/po/respond/{po.po_number}/reject"
 
     msg = Message(
         subject=f"Purchase Order {po.po_number} — INVENTORY",
