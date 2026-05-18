@@ -41,6 +41,9 @@ with app.app_context():
         print("Sequence fix skipped:", e)
 
 with app.app_context():
+    
+    db.create_all()
+
     from seed import create_admin
     create_admin()
 
