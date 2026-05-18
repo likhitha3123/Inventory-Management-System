@@ -708,11 +708,17 @@ def api_message_reply(mid):
 @admin_bp.route('/api/notifications')
 @login_required
 def api_notifications():
-    count  = ContactMessage.query.filter_by(status='pending').count()
-    recent = ContactMessage.query.filter_by(status='pending') \
-        .order_by(ContactMessage.created_at.desc()).limit(5).all()
-    return jsonify({'pending_count': count, 'recent': [m.to_dict() for m in recent]})
-
+    try:
+        count  = ContactMessage.query.filter_by(status='pending').count()
+        recent = ContactMessage.query.filter_by(status='pending') \
+            .order_by(ContactMessage.created_at.desc()).limit(5).all()
+        return jsonify({'pending_count': count, 'recent': [m.to_dict() for m in recent]})
+    except Exception as e:
+        print("NOTIFICATION ERROR:", str(e))
+        return jsonify({
+            'pending_count': 0,
+            'recent': [],
+            'error': str(e) }), 500
 # ── API: suppliers ──────────────────────────────────────
 
 @admin_bp.route('/api/suppliers', methods=['GET', 'POST'])
