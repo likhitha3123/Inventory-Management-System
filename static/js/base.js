@@ -305,6 +305,15 @@ function showToast(msg, type) {
 // ── Notification Bell ──────────────────────────────────
 async function loadNotifications(){
   try{
+    const controller = new AbortController();
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 8000);
+    var res = await fetch('/admin/api/notifications', {
+      signal: controller.signal });
+    clearTimeout(timeout);
+    if(!res.ok) return;
+    var d = await res.json();
     var res = await fetch('/admin/api/notifications');
     if(!res.ok) return;
     var d = await res.json();

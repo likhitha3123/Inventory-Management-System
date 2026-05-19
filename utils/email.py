@@ -1,20 +1,64 @@
-from flask_mail import Message
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 
-def send_credentials_email(mail, to_email, name, password):
+SENDGRID_FROM = os.environ.get(
+    'SENDGRID_FROM_EMAIL',
+    'yourverifiedemail@gmail.com'
+)
+
+
+# ---------------------------------------------------
+# INTERNAL SEND FUNCTION
+# ---------------------------------------------------
+
+def _send(to_email, subject, plain):
+
+    api_key = os.environ.get('SENDGRID_API_KEY')
+
+    if not api_key:
+        print("SENDGRID_API_KEY not found")
+        return False
 
     try:
 
-        msg = Message(
-            subject="Your INVENTORY Account Credentials",
-            recipients=[to_email]
+        message = Mail(
+            from_email=SENDGRID_FROM,
+            to_emails=to_email,
+            subject=subject,
+            plain_text_content=plain
         )
 
-        msg.body = f"""Hello {name},
+        sg = SendGridAPIClient(api_key)
+
+        response = sg.send(message)
+
+        print(f"SENDGRID STATUS: {response.status_code}")
+
+        return response.status_code in [200, 201, 202]
+
+    except Exception as e:
+
+        print(f"SENDGRID ERROR: {str(e)}")
+
+        return False
+
+
+# ---------------------------------------------------
+# USER CREDENTIALS EMAIL
+# ---------------------------------------------------
+
+def send_credentials_email(mail, to_email, name, password):
+
+    subject = "Your INVENTORY Account Credentials"
+
+    plain = f"""
+Hello {name},
 
 Your INVENTORY account has been created.
 
-Email:    {to_email}
+Email: {to_email}
 Password: {password}
 
 Please log in and change your password immediately.
@@ -22,42 +66,32 @@ Please log in and change your password immediately.
 -- INVENTORY Management System
 """
 
-        mail.send(msg)
+    return _send(
+        to_email=to_email,
+        subject=subject,
+        plain=plain
+    )
 
-        print(f"CREDENTIAL EMAIL SENT TO: {to_email}")
 
-        return True
-
-    except Exception as e:
-
-        print(f"CREDENTIAL EMAIL ERROR: {str(e)}")
-
-        return False
-
+# ---------------------------------------------------
+# PURCHASE ORDER EMAIL
+# ---------------------------------------------------
 
 def send_po_to_supplier(mail, supplier_email, supplier_name, po):
-    """
-    Send Purchase Order email to supplier
-    """
+    accept_url = (
+        f"https://inventory-management-system-eiqz.onrender.com"
+        f"/admin/po/respond/{po.po_number}/accept"
+    )
 
-    try:
+    reject_url = (
+        f"https://inventory-management-system-eiqz.onrender.com"
+        f"/admin/po/respond/{po.po_number}/reject"
+    )
 
-        accept_url = (
-            f"https://inventory-management-system-eiqz.onrender.com"
-            f"/admin/po/respond/{po.po_number}/accept"
-        )
+    subject = f"Purchase Order {po.po_number} — INVENTORY"
 
-        reject_url = (
-            f"https://inventory-management-system-eiqz.onrender.com"
-            f"/admin/po/respond/{po.po_number}/reject"
-        )
-
-        msg = Message(
-            subject=f"Purchase Order {po.po_number} — INVENTORY",
-            recipients=[supplier_email]
-        )
-
-        msg.body = f"""Dear {supplier_name},
+    plain = f"""
+Dear {supplier_name},
 
 A new Purchase Order has been placed with you.
 
@@ -79,32 +113,22 @@ REJECT ORDER:
 -- INVENTORY Management System
 """
 
-        mail.send(msg)
+    return _send(
+        to_email=supplier_email,
+        subject=subject,
+        plain=plain
+    )
 
-        print(f"PURCHASE ORDER EMAIL SENT TO: {supplier_email}")
 
-        return True
-
-    except Exception as e:
-
-        print(f"PURCHASE ORDER EMAIL ERROR: {str(e)}")
-
-        return False
-
+# ---------------------------------------------------
+# REJECTION EMAIL
+# ---------------------------------------------------
 
 def send_po_rejection_to_admin(mail, admin_email, supplier_name, po):
-    """
-    Notify admin when supplier rejects PO
-    """
+    subject = f"PO {po.po_number} Rejected by Supplier — INVENTORY"
 
-    try:
-
-        msg = Message(
-            subject=f"PO {po.po_number} Rejected by Supplier — INVENTORY",
-            recipients=[admin_email]
-        )
-
-        msg.body = f"""Purchase Order REJECTED
+    plain = f"""
+Purchase Order REJECTED
 
 PO Number : {po.po_number}
 Supplier  : {supplier_name}
@@ -119,14 +143,8 @@ Please log in and take action.
 -- INVENTORY Management System
 """
 
-        mail.send(msg)
-
-        print(f"REJECTION EMAIL SENT TO ADMIN: {admin_email}")
-
-        return True
-
-    except Exception as e:
-
-        print(f"REJECTION EMAIL ERROR: {str(e)}")
-
-        return False
+    return _send(
+        to_email=admin_email,
+        subject=subject,
+        plain=plain
+    )

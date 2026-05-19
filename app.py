@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
-from flask_mail import Mail
+# from flask_mail import Mail
 from config import Config
 from models.db import db
 from sqlalchemy import text
@@ -11,7 +11,7 @@ app.config.from_object(Config)
 
 db.init_app(app)
 migrate = Migrate(app, db)
-mail = Mail(app)
+# mail = Mail(app)
 
 from models import *
 

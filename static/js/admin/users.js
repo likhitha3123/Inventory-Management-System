@@ -120,8 +120,14 @@ document.getElementById('createForm').addEventListener('submit', async function(
 
   var btn = this.querySelector('[type="submit"]'); btn.disabled = true; btn.textContent = 'Saving…';
   try {
-    var res = await fetch(url, {method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
-    var d = await res.json();
+    var res = await fetch(url, {
+      method,
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body) 
+    });
+  var text = await res.text();
+  console.log("RAW RESPONSE:", text);
+  var d = JSON.parse(text);
     if (d.error) { showAlert('uAlert', friendlyError(d.error, 'user'), 'error'); return; }
     closeModal('userModal');
     load();
