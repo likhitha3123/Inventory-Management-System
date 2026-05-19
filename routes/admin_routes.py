@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request, jsonify, session, send_fi
 from werkzeug.security import generate_password_hash
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
-from flask_mail import Message as MailMessage
 from datetime import date, timedelta, datetime
 from collections import defaultdict
 import uuid
@@ -20,7 +19,7 @@ from models.catogery import Category
 from models.sub_catogery import SubCategory
 from models.returns import OrderReturn
 from routes.auth_routes import login_required, role_required, handle_errors, random_password, audit, update_inventory_from_po
-from utils.email import send_po_to_supplier, send_credentials_email
+from utils.email import send_po_to_supplier, send_credentials_email, _send 
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -690,18 +689,21 @@ def api_message_reply(mid):
     if not reply_text:
         return jsonify({'error': 'Reply message cannot be empty'}), 400
     try:
-        mail = current_app.extensions.get('mail')
-        if not mail:
-            return jsonify({'error': 'Mail service not configured'}), 500
-        mail.send(MailMessage(
-            subject=f"Re: Your Message — INVENTORY",
-            recipients=[msg.email],
-            body=(f"Hello {msg.first_name} {msg.last_name or ''},\n\n"
-                  f"Thank you for reaching out.\n\n---\nYour message:\n{msg.message}\n---\n\n"
-                  f"Our reply:\n{reply_text}\n\nBest regards,\nINVENTORY Management Team")
-        ))
+        subject = "Re: Your Message — INVENTORY"
+        plain = (
+            f"Hello {msg.first_name} {msg.last_name or ''},\n\n"
+            f"Thank you for reaching out.\n\n"
+            f"---\nYour message:\n{msg.message}\n---\n\n"
+            f"Our reply:\n{reply_text}\n\n"
+            f"Best regards,\n"
+            f"INVENTORY Management Team"
+        )
+        sent = _send(to_email=msg.email, subject=subject, plain=plain)
+        if not sent:
+            return jsonify({'error': 'Failed to send email'}), 500
         audit('UPDATE', 'contact_messages', mid, f'Replied to {msg.email}')
         return jsonify({'ok': True, 'message': 'Reply sent successfully'})
+
     except Exception as e:
         return jsonify({'error': f'Failed to send email: {str(e)}'}), 500
 
@@ -789,8 +791,7 @@ def api_purchase_orders():
         audit('CREATE', 'purchase_orders', po.id, f'Created PO: {po_num}')
         sup = Supplier.query.get(int(supplier_id))
         try:
-            from app import mail as _mail
-            send_po_to_supplier(_mail, sup.email, sup.supplier_name, po)
+            send_po_to_supplier(None, sup.email, sup.supplier_name, po)
         except Exception:
             pass
         return jsonify({'ok': True, 'po_number': po_num, 'id': po.id})
@@ -1133,8 +1134,7 @@ def api_users():
         db.session.commit()
         email_sent = False
         try:
-            from app import mail as _mail
-            send_credentials_email(_mail, email, name, pwd)
+            send_credentials_email(None, email, name, pwd)
             email_sent = True
         except Exception as e:
             print("Email error:", e)
