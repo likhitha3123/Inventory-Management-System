@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, url_for, redirect
 from flask_migrate import Migrate
 # from flask_mail import Mail
 from config import Config
@@ -46,6 +46,10 @@ with app.app_context():
 
     from seed import create_admin
     create_admin()
+
+@app.route('/favicon.ico')
+def favicon():
+    return redirect(url_for('static', filename='favicon.ico'))
 
 if __name__ == "__main__":
     app.run()
